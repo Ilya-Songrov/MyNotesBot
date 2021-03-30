@@ -128,14 +128,14 @@ InlineKeyboardMarkup::Ptr PlaceAbstract::createInlineKeyboardMarkup(const QVecto
     return kb;
 }
 
-ReplyKeyboardMarkup::Ptr PlaceAbstract::getStartingButtons()
+ReplyKeyboardMarkup::Ptr PlaceAbstract::getStartingButtons(const int64_t chat_id)
 {
-    static const QStringList layout { Content::getCommandStr(Content::ThyCloset_AddPrayerNeed)
-                , Content::getCommandStr(Content::ThyCloset_AddAnswerOfGod)
-                , Content::getCommandStr(Content::ThyCloset_ListPrayerNeed)
-                , Content::getCommandStr(Content::Additional_Additional)
-                                    };
-    static const auto kb = createOneColumnReplyKeyboardMarkup(layout, true, true);
+    const QVector<QStringList> vecLayouts {
+        { Content::getCommandStr(Content::MyNotes_AddNote), Content::getCommandStr(Content::MyNotes_RemoveNote) },
+        //                , Content::getCommandStr(Content::ThyCloset_ListPrayerNeed)
+        //                , Content::getCommandStr(Content::Additional_Additional)
+    };
+    static const auto kb = createReplyKeyboardMarkup(vecLayouts, true, true);
     return kb;
 }
 
@@ -143,12 +143,12 @@ void PlaceAbstract::sendStartingButtons(const int64_t chat_id)
 {
     static const QString answer { QObject::tr("Hello child of God. This bot is designed to make your prayer life effective. \n\nMay God bless you.") };
     static const auto answerStdStr { answer.toStdString() };
-    bot->getApi().sendMessage(chat_id, answerStdStr, false, 0, getStartingButtons());
+    bot->getApi().sendMessage(chat_id, answerStdStr, false, 0, getStartingButtons(chat_id));
 }
 
 void PlaceAbstract::sendStartingMessage(const int64_t chat_id, const std::string &message)
 {
-    bot->getApi().sendMessage(chat_id, message, false, 0, getStartingButtons());
+    bot->getApi().sendMessage(chat_id, message, false, 0, getStartingButtons(chat_id));
 }
 
 void PlaceAbstract::sendInlineKeyboardMarkupMessage(const int64_t chat_id, const std::string &message, const InlineKeyboardMarkup::Ptr inlineKeyboardMarkup)

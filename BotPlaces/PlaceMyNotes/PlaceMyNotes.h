@@ -4,10 +4,10 @@
 
 #include "../PlaceAbstract.h"
 
-class PlaceThyCloset : public PlaceAbstract
+class PlaceMyNotes : public PlaceAbstract
 {
 public:
-    explicit PlaceThyCloset(QObject *parent = nullptr);
+    explicit PlaceMyNotes(QObject *parent = nullptr);
 
     virtual void slotOnCommand(const Message::Ptr &message, const ChatInfo &chatInfo) override;
     virtual void slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatInfo &chatInfo) override;

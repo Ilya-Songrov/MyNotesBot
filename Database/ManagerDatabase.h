@@ -15,15 +15,10 @@ class ManagerDatabase : public QObject
     Q_OBJECT
 
 public:
-    enum TypeListPrayerNeeds{
-        PrayerNeedsWithoutAnswerOfGod,
-        PrayerNeedsWithAnswerOfGod,
-        PrayerNeedsAll,
-    };
-    struct PrayerNeed{
-        QString need;
-        QString answer;
-        QString need_id;
+    struct MyNote{
+        QString note;
+        QString group;
+        QString note_id;
     };
 
     explicit ManagerDatabase(const QString &pathDatabase, QObject *parent = nullptr);
@@ -41,8 +36,8 @@ public:
 
     bool deleteAllPrayerNeeds(const std::int64_t chat_id);
 
-    QStringList getListPrayerNeeds(const std::int64_t chat_id, const TypeListPrayerNeeds typeList = TypeListPrayerNeeds::PrayerNeedsWithoutAnswerOfGod);
-    QVector<PrayerNeed> getVecPrayerNeeds(const std::int64_t chat_id, const TypeListPrayerNeeds typeList = TypeListPrayerNeeds::PrayerNeedsWithoutAnswerOfGod);
+    QStringList getListMyNotes(const std::int64_t chat_id, const std::string group);
+    QVector<MyNote> getVecPrayerNeeds(const std::int64_t chat_id, const std::string group);
     void printDatabase() const;
 private:
     bool inserNewChat(const std::int64_t chat_id);

@@ -9,9 +9,9 @@ ManagerBot::ManagerBot(const QString token, QObject *parent) : QObject(parent)
     initGlobalData(token.isEmpty() ? getTokenFromFile() : token);
     PlaceAbstract::initMapAllChats(mapAllChats);
 
-    placeThyCloset      = new PlaceThyCloset    (this);
+    placeMyNotes        = new PlaceMyNotes    (this);
     placeAdditional     = new PlaceAdditional   (this);
-    placeBot            = placeThyCloset;
+    placeBot            = placeMyNotes;
     setSettings();
 }
 
@@ -81,8 +81,8 @@ ChatInfo ManagerBot::getChatInfo(const int64_t chat_id, const std::string &curre
 void ManagerBot::changeObjPtrPlaceBot(const Content::Place place)
 {
     switch (place) {
-    case Content::Place::ThyCloset:
-        placeBot = placeThyCloset;
+    case Content::Place::MyNotes:
+        placeBot = placeMyNotes;
         break;
     case Content::Place::Additional:
         placeBot = placeAdditional;

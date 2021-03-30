@@ -28,21 +28,21 @@ bool ManagerDatabase::isOpen() const
     return db.isOpen();
 }
 
-bool ManagerDatabase::addPrayerNeed(const QString &prayerNeed, const int64_t chat_id)
+bool ManagerDatabase::addNote(const QString &note, const int64_t chat_id)
 {
-    if (prayerNeed.isEmpty()){
+    if (note.isEmpty()){
         qWarning() << __FUNCTION__ << "failed: value cannot be empty" << Qt::endl;
         return false;
     }
-    if (existsPrayerNeed(prayerNeed, chat_id)) {
+    if (existsPrayerNeed(note, chat_id)) {
         return true;
     }
     if (!existsChatId(chat_id)) {
         inserNewChat(chat_id);
     }
     QSqlQuery query;
-    query.prepare("INSERT INTO prayer_needs (need, chat_id) VALUES (:prayerNeed, :chat_id)");
-    query.bindValue(":prayerNeed", prayerNeed);
+    query.prepare("INSERT INTO my_notes (note, chat_id) VALUES (:note, :chat_id)");
+    query.bindValue(":note", note);
     query.bindValue(":chat_id", varinatChatId(chat_id));
     if(query.exec()){
         return true;
@@ -51,9 +51,9 @@ bool ManagerDatabase::addPrayerNeed(const QString &prayerNeed, const int64_t cha
     return false;
 }
 
-bool ManagerDatabase::addPrayerNeed(const std::string &prayerNeed, const int64_t chat_id)
+bool ManagerDatabase::addNote(const std::string &note, const int64_t chat_id)
 {
-    return addPrayerNeed(QString::fromStdString(prayerNeed), chat_id);
+    return addNote(QString::fromStdString(note), chat_id);
 }
 
 bool ManagerDatabase::addAnswerOfGod(const QString &answer, const int need_id)
@@ -63,7 +63,7 @@ bool ManagerDatabase::addAnswerOfGod(const QString &answer, const int need_id)
         return false;
     }
     QSqlQuery query;
-    query.prepare("UPDATE prayer_needs SET answer = :answer WHERE need_id = :need_id");
+    query.prepare("UPDATE my_notes SET answer = :answer WHERE need_id = :need_id");
     query.bindValue(":answer", answer);
     query.bindValue(":need_id", need_id);
     if(query.exec()){
@@ -79,16 +79,16 @@ bool ManagerDatabase::addAnswerOfGod(const std::string &answer, const int need_i
     return addAnswerOfGod(QString::fromStdString(answer), need_id);
 }
 
-bool ManagerDatabase::deletePrayerNeed(const int need_id, const int64_t chat_id)
+bool ManagerDatabase::deleteNote(const int note_id, const int64_t chat_id)
 {
-    if (need_id == -1){
+    if (note_id == -1){
         qWarning() << __FUNCTION__ << "failed: value cannot be -1" << Qt::endl;
         return false;
     }
     QSqlQuery query;
-    query.prepare("DELETE FROM prayer_needs WHERE (need_id = :need_id AND chat_id = :chat_id)");
+    query.prepare("DELETE FROM my_notes WHERE (need_id = :need_id AND chat_id = :chat_id)");
     query.bindValue(":chat_id", varinatChatId(chat_id));
-    query.bindValue(":need_id", need_id);
+    query.bindValue(":need_id", note_id);
     if(query.exec()){
         return true;
     }
@@ -96,16 +96,16 @@ bool ManagerDatabase::deletePrayerNeed(const int need_id, const int64_t chat_id)
     return false;
 }
 
-bool ManagerDatabase::deleteAllPrayerNeeds(const int64_t chat_id)
+bool ManagerDatabase::deleteAllMyNotes(const int64_t chat_id)
 {
     const bool retChat = deleteChat(chat_id);
-    const bool retNeed = deletePrayerNeed(chat_id);
+    const bool retNeed = deleteNote(chat_id);
     return retChat && retNeed;
 }
 
-QStringList ManagerDatabase::getListPrayerNeeds(const int64_t chat_id, const ManagerDatabase::TypeListPrayerNeeds typeList)
+QStringList ManagerDatabase::getListMyNotes(const int64_t chat_id, const ManagerDatabase::TypeListMyNotes typeList)
 {
-    const auto vecNeeds = getVecPrayerNeeds(chat_id, typeList);
+    const auto vecNeeds = getVecMyNotes(chat_id, typeList);
     QStringList list;
     for (const auto &prayerNeed: vecNeeds) {
         list.append(prayerNeed.need);
@@ -113,18 +113,18 @@ QStringList ManagerDatabase::getListPrayerNeeds(const int64_t chat_id, const Man
     return list;
 }
 
-QVector<ManagerDatabase::PrayerNeed> ManagerDatabase::getVecPrayerNeeds(const int64_t chat_id, const ManagerDatabase::TypeListPrayerNeeds typeList)
+QVector<ManagerDatabase::Note> ManagerDatabase::getVecMyNotes(const int64_t chat_id, const ManagerDatabase::TypeListMyNotes typeList)
 {
-    QVector<PrayerNeed> vec;
+    QVector<Note> vec;
     QSqlQuery query;
-    if (typeList == TypeListPrayerNeeds::PrayerNeedsWithoutAnswerOfGod) {
-        query.prepare("SELECT * FROM prayer_needs WHERE chat_id = :chat_id AND answer IS NULL");
+    if (typeList == TypeListMyNotes::PrayerNeedsWithoutAnswerOfGod) {
+        query.prepare("SELECT * FROM my_notes WHERE chat_id = :chat_id AND answer IS NULL");
     }
-    else if (typeList == TypeListPrayerNeeds::PrayerNeedsWithAnswerOfGod) {
-        query.prepare("SELECT * FROM prayer_needs WHERE (chat_id = :chat_id AND answer IS NOT NULL)");
+    else if (typeList == TypeListMyNotes::PrayerNeedsWithAnswerOfGod) {
+        query.prepare("SELECT * FROM my_notes WHERE (chat_id = :chat_id AND answer IS NOT NULL)");
     }
-    else if (typeList == TypeListPrayerNeeds::PrayerNeedsAll) {
-        query.prepare("SELECT * FROM prayer_needs WHERE (chat_id = :chat_id)");
+    else if (typeList == TypeListMyNotes::PrayerNeedsAll) {
+        query.prepare("SELECT * FROM my_notes WHERE (chat_id = :chat_id)");
     }
     query.bindValue(":chat_id", varinatChatId(chat_id));
     if(!query.exec()){
@@ -137,9 +137,9 @@ QVector<ManagerDatabase::PrayerNeed> ManagerDatabase::getVecPrayerNeeds(const in
     const int idAnswer = record.indexOf("answer");
     while (query.next())
     {
-        PrayerNeed prayerNeed;
+        Note prayerNeed;
         prayerNeed.need_id  = query.value(idNeedId).toString();
-        prayerNeed.need     = "◾️ " + query.value(idNeed).toString();
+        prayerNeed.note     = "◾️ " + query.value(idNeed).toString();
         prayerNeed.answer   = query.value(idAnswer).toString();
         vec.append(prayerNeed);
     }
@@ -149,7 +149,7 @@ QVector<ManagerDatabase::PrayerNeed> ManagerDatabase::getVecPrayerNeeds(const in
 void ManagerDatabase::printDatabase() const
 {
     qDebug() << "Begin" << __FUNCTION__;
-    QSqlQuery query("SELECT * FROM prayer_needs");
+    QSqlQuery query("SELECT * FROM my_notes");
     const QSqlRecord record = query.record();
     const int idNeedId = record.indexOf("need_id");
     const int idNeed = record.indexOf("need");
@@ -190,10 +190,10 @@ bool ManagerDatabase::deleteChat(const int64_t chat_id)
     return false;
 }
 
-bool ManagerDatabase::deletePrayerNeed(const int64_t chat_id)
+bool ManagerDatabase::deleteNote(const int64_t chat_id)
 {
     QSqlQuery query;
-    query.prepare("DELETE FROM prayer_needs WHERE (chat_id = :chat_id)");
+    query.prepare("DELETE FROM my_notes WHERE (chat_id = :chat_id)");
     query.bindValue(":chat_id", varinatChatId(chat_id));
     if(query.exec()){
         return true;
@@ -217,7 +217,7 @@ bool ManagerDatabase::existsChatId(const int64_t chat_id) const
 bool ManagerDatabase::existsPrayerNeed(const QString &prayerNeed, const int64_t chat_id) const
 {
     QSqlQuery query;
-    query.prepare("SELECT * FROM prayer_needs WHERE (need = ':prayerNeed' AND chat_id = :chat_id);");
+    query.prepare("SELECT * FROM my_notes WHERE (need = ':prayerNeed' AND chat_id = :chat_id);");
     query.bindValue(":prayerNeed", prayerNeed);
     query.bindValue(":chat_id", varinatChatId(chat_id));
     if (query.exec()){
@@ -230,7 +230,7 @@ bool ManagerDatabase::existsPrayerNeed(const QString &prayerNeed, const int64_t 
 void ManagerDatabase::createDatabase()
 {
     createTable_AllChats();
-    createTable_PrayerNeeds();
+    createTable_Notes();
 }
 
 bool ManagerDatabase::createTable_AllChats()
@@ -249,13 +249,13 @@ bool ManagerDatabase::createTable_AllChats()
     return false;
 }
 
-bool ManagerDatabase::createTable_PrayerNeeds()
+bool ManagerDatabase::createTable_Notes()
 {
     QSqlQuery query;
-    query.prepare("CREATE TABLE IF NOT EXISTS prayer_needs ("
-            "need_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-            "need TEXT NOT NULL,"
-            "answer TEXT DEFAULT NULL,"
+    query.prepare("CREATE TABLE IF NOT EXISTS my_notes ("
+            "note_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+            "note TEXT NOT NULL,"
+            "group TEXT NOT NULL,"
             "chat_id INTEGER NOT NULL,"
             "FOREIGN KEY (chat_id) REFERENCES all_chats(chat_id) ON DELETE CASCADE"
             ");");
@@ -263,6 +263,6 @@ bool ManagerDatabase::createTable_PrayerNeeds()
     if (query.exec()){
         return true;
     }
-    qWarning() << __FUNCTION__ << "Couldn't create the table 'prayer_needs':" << query.lastError() << Qt::endl;
+    qWarning() << __FUNCTION__ << "Couldn't create the table 'my_notes':" << query.lastError() << Qt::endl;
     return false;
 }

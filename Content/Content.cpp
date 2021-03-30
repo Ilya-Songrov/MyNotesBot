@@ -15,9 +15,8 @@ void Content::initContent()
     vecPlaceCommand = {
         {   Content::PlaceCommand(Content::Place::MultiPlace, Content::NoCommand), {} },
 
-        {   Content::PlaceCommand(Content::Place::ThyCloset, Content::ThyCloset_AddPrayerNeed), "🙏 " + QObject::tr("Add prayer need") },
-        {   Content::PlaceCommand(Content::Place::ThyCloset, Content::ThyCloset_AddAnswerOfGod), "✔️ " + QObject::tr("Add answer of God") },
-        {   Content::PlaceCommand(Content::Place::ThyCloset, Content::ThyCloset_ListPrayerNeed), "🗒 " + QObject::tr("List of prayer needs") },
+        {   Content::PlaceCommand(Content::Place::MyNotes, Content::MyNotes_AddNote), "🗒 " + QObject::tr("Add note") },
+        {   Content::PlaceCommand(Content::Place::MyNotes, Content::MyNotes_RemoveNote), "🗒 " + QObject::tr("Remove note") },
 
         {   Content::PlaceCommand(Content::Place::Additional, Content::Additional_Additional), "🔹 " + QObject::tr("Additional") },
         {   Content::PlaceCommand(Content::Place::Additional, Content::Additional_ShowHistory), QObject::tr("Show history") + " 📍" },

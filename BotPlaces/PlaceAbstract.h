@@ -30,7 +30,7 @@ protected:
     InlineKeyboardMarkup::Ptr createOneColumnInlineKeyboardMarkup(const QList<QPair<QString, QString> > &listButtonsNameData);
     InlineKeyboardMarkup::Ptr createInlineKeyboardMarkup(const QVector<QStringList> &vecLayouts);
 
-    ReplyKeyboardMarkup::Ptr getStartingButtons();
+    ReplyKeyboardMarkup::Ptr getStartingButtons(const int64_t chat_id);
     void sendStartingButtons(const std::int64_t chat_id);
     void sendStartingMessage(const std::int64_t chat_id, const std::string &message);
     void sendInlineKeyboardMarkupMessage(const std::int64_t chat_id, const std::string &message, const InlineKeyboardMarkup::Ptr inlineKeyboardMarkup);

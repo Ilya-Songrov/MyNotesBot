@@ -15,7 +15,7 @@ SOURCES += \
     Anomalies/ExceptionHandler.cpp \
     BotPlaces/PlaceAbstract.cpp \
     BotPlaces/PlaceAdditional/PlaceAdditional.cpp \
-    BotPlaces/PlaceThyCloset/PlaceThyCloset.cpp \
+    BotPlaces/PlaceMyNotes/PlaceMyNotes.cpp \
     Content/ChatInfo.cpp \
     Content/Content.cpp \
     Database/ManagerDatabase.cpp \
@@ -31,7 +31,7 @@ HEADERS += \
     Anomalies/ExceptionHandler.h \
     BotPlaces/PlaceAbstract.h \
     BotPlaces/PlaceAdditional/PlaceAdditional.h \
-    BotPlaces/PlaceThyCloset/PlaceThyCloset.h \
+    BotPlaces/PlaceMyNotes/PlaceMyNotes.h \
     Content/ChatInfo.h \
     Content/Content.h \
     Database/ManagerDatabase.h \

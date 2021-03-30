@@ -63,7 +63,7 @@ void PlaceAdditional::onAnyMessage(const Message::Ptr &message)
 void PlaceAdditional::onShowHistory(const CallbackQuery::Ptr &callbackQuery)
 {
     static const auto answer { QObject::tr("\n\nShow your history:\n").toStdString() };
-    const auto vecNeeds = managerDatabase->getVecPrayerNeeds(callbackQuery->message->chat->id, ManagerDatabase::PrayerNeedsAll);
+    const auto vecNeeds = managerDatabase->getVecMyNotes(callbackQuery->message->chat->id, ManagerDatabase::PrayerNeedsAll);
     QString needs;
     for (const auto &prayerNeed: vecNeeds) {
         needs += QString("%1 (%2)\n").arg(prayerNeed.need, prayerNeed.answer);
@@ -75,7 +75,7 @@ void PlaceAdditional::onShowHistory(const CallbackQuery::Ptr &callbackQuery)
 void PlaceAdditional::onDeletePrayerNeed(const CallbackQuery::Ptr &callbackQuery)
 {
     static const auto answer { QObject::tr("Select the prayer need:").toStdString() };
-    const auto vecNeeds = managerDatabase->getVecPrayerNeeds(callbackQuery->message->chat->id);
+    const auto vecNeeds = managerDatabase->getVecMyNotes(callbackQuery->message->chat->id);
     QList<QPair<QString, QString> > listButtons;
     for (const auto &prayerNeed: vecNeeds) {
         listButtons.append(qMakePair(prayerNeed.need.left(15) + " ...", prayerNeed.need_id));
@@ -88,7 +88,7 @@ void PlaceAdditional::onDeletePrayerNeed(const CallbackQuery::Ptr &callbackQuery
 void PlaceAdditional::onDeleteHistory(const CallbackQuery::Ptr &callbackQuery)
 {
     static const auto answer { QObject::tr("Your all prayer needs has deleted").toStdString() };
-    managerDatabase->deleteAllPrayerNeeds(callbackQuery->message->chat->id);
+    managerDatabase->deleteAllMyNotes(callbackQuery->message->chat->id);
     bot->getApi().answerCallbackQuery(callbackQuery->id);
     sendStartingMessage(callbackQuery->message->chat->id, answer);
 }
@@ -107,7 +107,7 @@ void PlaceAdditional::onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery
         bool ok;
         const int need_id = QString::fromStdString(callbackQuery->data).toInt(&ok);
         if (ok) {
-            managerDatabase->deletePrayerNeed(need_id, chat_id);
+            managerDatabase->deleteNote(need_id, chat_id);
         }
         bot->getApi().answerCallbackQuery(callbackQuery->id);
         sendStartingMessage(chat_id, answer);
@@ -116,6 +116,6 @@ void PlaceAdditional::onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery
 
 std::string PlaceAdditional::getListPrayerNeeds(const Message::Ptr &message)
 {
-    const QString answer { "List prayers:\n" + managerDatabase->getListPrayerNeeds(message->chat->id, ManagerDatabase::PrayerNeedsWithAnswerOfGod).join('\n') };
+    const QString answer { "List prayers:\n" + managerDatabase->getListMyNotes(message->chat->id, ManagerDatabase::PrayerNeedsWithAnswerOfGod).join('\n') };
     return answer.toStdString();
 }

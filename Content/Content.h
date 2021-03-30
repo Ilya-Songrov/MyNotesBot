@@ -18,7 +18,7 @@ public:
         CallbackQuery,
     };
     enum class Place{
-        ThyCloset,
+        MyNotes,
         Additional,
         Church,
         MultiPlace,
@@ -27,21 +27,20 @@ public:
     enum Command{
         NoCommand,
 
-        ThyCloset_AddPrayerNeed,
-        ThyCloset_AddAnswerOfGod,
-        ThyCloset_WriteAnswerOfGod,
-        ThyCloset_ListPrayerNeed,
+        MultiPlace_Start,
+        MultiPlace_Help,
+        MultiPlace_AnyMessage,
+        MultiPlace_AnyCallbackQuery = MultiPlace_AnyMessage,
+
+        MyNotes_AddNote,
+        MyNotes_RemoveNote,
+        MyNotes_ListNotesOfGroup,
 
         Additional_Additional,
         Additional_ShowHistory,
         Additional_DeletePrayerNeed,
         Additional_DeleteHistory,
         Additional_Developer,
-
-        MultiPlace_Start,
-        MultiPlace_Help,
-        MultiPlace_AnyMessage,
-        MultiPlace_AnyCallbackQuery = MultiPlace_AnyMessage,
     };
     Q_ENUM(Command)
     struct PlaceCommand{
