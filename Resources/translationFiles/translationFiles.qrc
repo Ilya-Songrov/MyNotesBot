@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/translationFiles">
+        <file>appTranslator_ru_UA.qm</file>
+    </qresource>
+</RCC>
