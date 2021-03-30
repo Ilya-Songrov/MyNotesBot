@@ -42,7 +42,7 @@ void PlaceMyNotes::onAddNote(const Message::Ptr &message)
 void PlaceMyNotes::onRemoveNote(const Message::Ptr &message)
 {
     static const auto answer { QObject::tr("Select the prayer need:").toStdString() };
-    const auto vecNeeds = managerDatabase->getVecPrayerNeeds(message->chat->id);
+    const auto vecNeeds = managerDatabase->getVecMyNotes(message->chat->id);
     QList<QPair<QString, QString> > listButtons;
     for (const auto &prayerNeed: vecNeeds) {
         listButtons.append(qMakePair(prayerNeed.need.left(15) + " ...", prayerNeed.need_id));
@@ -60,7 +60,7 @@ void PlaceMyNotes::onAnyMessage(const Message::Ptr &message)
 {
     const auto chat_id = message->chat->id;
     if (chatContainsLastCommand(chat_id, Content::MyNotes_AddNote)) {
-        managerDatabase->addPrayerNeed(message->text, message->chat->id);
+        managerDatabase->addNote(message->text, message->chat->id);
         sendStartingMessage(chat_id, getListPrayerNeeds(message));
     }
 //    else if (chatContainsLastCommand(chat_id, Content::ThyCloset_WriteAnswerOfGod)) {
@@ -95,7 +95,7 @@ void PlaceMyNotes::onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery)
 
 std::string PlaceMyNotes::getListPrayerNeeds(const Message::Ptr &message)
 {
-    const QString answer { QObject::tr("List prayers:") + "\n" + managerDatabase->getListPrayerNeeds(message->chat->id).join('\n') };
+    const QString answer { QObject::tr("List prayers:") + "\n" + managerDatabase->getListMyNotes(message->chat->id).join('\n') };
     return answer.toStdString();
 }
 

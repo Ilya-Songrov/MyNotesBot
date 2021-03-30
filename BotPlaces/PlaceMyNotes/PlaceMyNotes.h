@@ -13,8 +13,8 @@ public:
     virtual void slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatInfo &chatInfo) override;
 
 private:
-    void onAddPrayerNeed(const Message::Ptr &message);
-    void onAddAnswerOfGod(const Message::Ptr &message);
+    void onAddNote(const Message::Ptr &message);
+    void onRemoveNote(const Message::Ptr &message);
     void onListPrayerNeed(const Message::Ptr &message);
     void onAnyMessage(const Message::Ptr &message);
     void onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery);
