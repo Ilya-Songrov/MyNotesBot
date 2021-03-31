@@ -10,17 +10,24 @@
 **
 **************************************************************************/
 
-#pragma once
+#include "placestart.h"
 
-#include "Content.h"
-
-class ChatInfo
+PlaceStart::PlaceStart(QObject *parent) : PlaceAbstract(parent)
 {
-public:
-    Content::Place      lastPlace       = Content::Place::MultiPlace;
-    Content::Command    lastCommand     = Content::Command::MultiPlace_AnyMessage;
-    Content::Place      currentPlace    = Content::Place::MultiPlace;
-    Content::Command    currentCommand  = Content::Command::MultiPlace_AnyMessage;
-    QString lastGroup;
-};
 
+}
+
+void PlaceStart::slotOnCommand(const Message::Ptr &message, const ChatInfo &chatInfo)
+{
+    if (chatInfo.currentCommand == Content::Start_ChooseLanguage) {
+        onChooseLanguage(message);
+    }
+    else{
+        PlaceAbstract::slotOnCommand(message, chatInfo);
+    }
+}
+
+void PlaceStart::onChooseLanguage(const Message::Ptr &message)
+{
+    sendMainMenuButtons(message->chat->id);
+}

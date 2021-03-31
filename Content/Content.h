@@ -18,23 +18,26 @@ public:
         CallbackQuery,
     };
     enum class Place{
-        MyNotes,
+        Start,
+        Notes,
         Additional,
-        Church,
         MultiPlace,
     };
     Q_ENUM(Place)
     enum Command{
         NoCommand,
 
+        Start_ChooseLanguage,
+
         MultiPlace_Start,
         MultiPlace_Help,
         MultiPlace_AnyMessage,
         MultiPlace_AnyCallbackQuery = MultiPlace_AnyMessage,
 
-        MyNotes_AddNote,
-        MyNotes_RemoveNote,
-        MyNotes_ListNotesOfGroup,
+        Notes_AddNote,
+        Notes_RemoveNote,
+        Notes_ListNotesOfGroup,
+        Notes_NewGroup,
 
         Additional_Additional,
         Additional_ShowHistory,

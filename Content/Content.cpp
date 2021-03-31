@@ -15,8 +15,9 @@ void Content::initContent()
     vecPlaceCommand = {
         {   Content::PlaceCommand(Content::Place::MultiPlace, Content::NoCommand), {} },
 
-        {   Content::PlaceCommand(Content::Place::MyNotes, Content::MyNotes_AddNote), "🗒 " + QObject::tr("Add note") },
-        {   Content::PlaceCommand(Content::Place::MyNotes, Content::MyNotes_RemoveNote), "🗒 " + QObject::tr("Remove note") },
+        {   Content::PlaceCommand(Content::Place::Notes, Content::Notes_AddNote), "🗒 " + QObject::tr("Add note") },
+        {   Content::PlaceCommand(Content::Place::Notes, Content::Notes_RemoveNote), "🗒 " + QObject::tr("Remove note") },
+        {   Content::PlaceCommand(Content::Place::Notes, Content::Notes_NewGroup),  QObject::tr("New group") },
 
         {   Content::PlaceCommand(Content::Place::Additional, Content::Additional_Additional), "🔹 " + QObject::tr("Additional") },
         {   Content::PlaceCommand(Content::Place::Additional, Content::Additional_ShowHistory), QObject::tr("Show history") + " 📍" },

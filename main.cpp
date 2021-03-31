@@ -4,7 +4,7 @@
 #include "ManagerBot.h"
 
 #define VERSION_MAJOR    "0"
-#define VERSION_MINOR    "3"
+#define VERSION_MINOR    "4"
 #define VERSION_BUILD    "0"
 #define APP_VERSION QString(VERSION_MAJOR) + "." + QString(VERSION_MINOR) + "." + QString(VERSION_BUILD)
 

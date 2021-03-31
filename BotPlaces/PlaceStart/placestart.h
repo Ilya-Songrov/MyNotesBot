@@ -12,15 +12,18 @@
 
 #pragma once
 
-#include "Content.h"
+#include <QObject>
 
-class ChatInfo
+#include "BotPlaces/PlaceAbstract.h"
+
+class PlaceStart : public PlaceAbstract
 {
 public:
-    Content::Place      lastPlace       = Content::Place::MultiPlace;
-    Content::Command    lastCommand     = Content::Command::MultiPlace_AnyMessage;
-    Content::Place      currentPlace    = Content::Place::MultiPlace;
-    Content::Command    currentCommand  = Content::Command::MultiPlace_AnyMessage;
-    QString lastGroup;
+    explicit PlaceStart(QObject *parent = nullptr);
+
+    virtual void slotOnCommand(const Message::Ptr &message, const ChatInfo &chatInfo) override;
+
+private:
+    void onChooseLanguage(const Message::Ptr &message);
 };
 

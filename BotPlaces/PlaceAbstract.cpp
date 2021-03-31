@@ -16,19 +16,19 @@ void PlaceAbstract::slotOnCommand(const Message::Ptr &message, const ChatInfo &c
 {
     switch (chatInfo.currentCommand) {
     case Content::MultiPlace_Start:
-        sendStartingButtons(message->chat->id);
+        sendMainMenuButtons(message->chat->id);
         break;
     case Content::MultiPlace_Help:
-        sendStartingButtons(message->chat->id);
+        sendMainMenuButtons(message->chat->id);
         break;
     case Content::MultiPlace_AnyMessage:
         if (QString::fromStdString(message->text).toLower() == "ping") {
-            sendStartingMessage(message->chat->id, "Pong!");
+            sendMainMenuMessage(message->chat->id, "Pong!");
         }
         break;
     default:
         static const auto answer { QObject::tr("Query is not correct").toStdString() };
-        sendStartingMessage(message->chat->id, answer);
+        sendMainMenuMessage(message->chat->id, answer);
     }
 }
 
@@ -36,19 +36,19 @@ void PlaceAbstract::slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery,
 {
     switch (chatInfo.currentCommand) {
     case Content::MultiPlace_Start:
-        sendStartingButtons(callbackQuery->message->chat->id);
+        sendMainMenuButtons(callbackQuery->message->chat->id);
         break;
     case Content::MultiPlace_Help:
-        sendStartingButtons(callbackQuery->message->chat->id);
+        sendMainMenuButtons(callbackQuery->message->chat->id);
         break;
     case Content::MultiPlace_AnyMessage:
         if (QString::fromStdString(callbackQuery->message->text).toLower() == "ping") {
-            sendStartingMessage(callbackQuery->message->chat->id, "Pong!");
+            sendMainMenuMessage(callbackQuery->message->chat->id, "Pong!");
         }
         break;
     default:
         static const auto answer { QObject::tr("Query is not correct").toStdString() };
-        sendStartingMessage(callbackQuery->message->chat->id, answer);
+        sendMainMenuMessage(callbackQuery->message->chat->id, answer);
     }
 }
 
@@ -128,27 +128,37 @@ InlineKeyboardMarkup::Ptr PlaceAbstract::createInlineKeyboardMarkup(const QVecto
     return kb;
 }
 
-ReplyKeyboardMarkup::Ptr PlaceAbstract::getStartingButtons(const int64_t chat_id)
+ReplyKeyboardMarkup::Ptr PlaceAbstract::getMainMenuButtons(const int64_t chat_id)
 {
-    const QVector<QStringList> vecLayouts {
-        { Content::getCommandStr(Content::MyNotes_AddNote), Content::getCommandStr(Content::MyNotes_RemoveNote) },
-        //                , Content::getCommandStr(Content::ThyCloset_ListPrayerNeed)
-        //                , Content::getCommandStr(Content::Additional_Additional)
-    };
-    static const auto kb = createReplyKeyboardMarkup(vecLayouts, true, true);
+    const auto listGroups = managerDatabase->getListGroups(chat_id);
+    QVector<QStringList> vecLayouts;
+    if (listGroups.size() >= 1 && listGroups.size() <= 2) {
+        vecLayouts.append(listGroups);
+    }
+    else if (listGroups.size() >= 3 && listGroups.size() <= 4) {
+        vecLayouts.append(listGroups);
+    }
+    else{
+        if (!listGroups.isEmpty()) {
+            vecLayouts.append(listGroups);
+        }
+    }
+    static const QStringList buttonsAddRemove = { Content::getCommandStr(Content::Notes_AddNote), Content::getCommandStr(Content::Notes_RemoveNote) };
+    vecLayouts.append(buttonsAddRemove);
+    static const auto kb = createReplyKeyboardMarkup(vecLayouts, true, false);
     return kb;
 }
 
-void PlaceAbstract::sendStartingButtons(const int64_t chat_id)
+void PlaceAbstract::sendMainMenuButtons(const int64_t chat_id)
 {
     static const QString answer { QObject::tr("Hello child of God. This bot is designed to make your prayer life effective. \n\nMay God bless you.") };
     static const auto answerStdStr { answer.toStdString() };
-    bot->getApi().sendMessage(chat_id, answerStdStr, false, 0, getStartingButtons(chat_id));
+    bot->getApi().sendMessage(chat_id, answerStdStr, false, 0, getMainMenuButtons(chat_id));
 }
 
-void PlaceAbstract::sendStartingMessage(const int64_t chat_id, const std::string &message)
+void PlaceAbstract::sendMainMenuMessage(const int64_t chat_id, const std::string &message)
 {
-    bot->getApi().sendMessage(chat_id, message, false, 0, getStartingButtons(chat_id));
+    bot->getApi().sendMessage(chat_id, message, false, 0, getMainMenuButtons(chat_id));
 }
 
 void PlaceAbstract::sendInlineKeyboardMarkupMessage(const int64_t chat_id, const std::string &message, const InlineKeyboardMarkup::Ptr inlineKeyboardMarkup)

@@ -28,21 +28,22 @@ bool ManagerDatabase::isOpen() const
     return db.isOpen();
 }
 
-bool ManagerDatabase::addNote(const QString &note, const int64_t chat_id)
+bool ManagerDatabase::addNote(const QString &note, const QString group, const int64_t chat_id)
 {
     if (note.isEmpty()){
         qWarning() << __FUNCTION__ << "failed: value cannot be empty" << Qt::endl;
         return false;
     }
-    if (existsPrayerNeed(note, chat_id)) {
+    if (existsNote(note, group, chat_id)) {
         return true;
     }
     if (!existsChatId(chat_id)) {
         inserNewChat(chat_id);
     }
     QSqlQuery query;
-    query.prepare("INSERT INTO my_notes (note, chat_id) VALUES (:note, :chat_id)");
+    query.prepare("INSERT INTO my_notes (note, group, chat_id) VALUES (:note, :group, :chat_id)");
     query.bindValue(":note", note);
+    query.bindValue(":group", group);
     query.bindValue(":chat_id", varinatChatId(chat_id));
     if(query.exec()){
         return true;
@@ -51,9 +52,9 @@ bool ManagerDatabase::addNote(const QString &note, const int64_t chat_id)
     return false;
 }
 
-bool ManagerDatabase::addNote(const std::string &note, const int64_t chat_id)
+bool ManagerDatabase::addNote(const std::string &note, const std::string &group, const int64_t chat_id)
 {
-    return addNote(QString::fromStdString(note), chat_id);
+    return addNote(QString::fromStdString(note), QString::fromStdString(group), chat_id);
 }
 
 bool ManagerDatabase::addAnswerOfGod(const QString &answer, const int need_id)
@@ -96,51 +97,66 @@ bool ManagerDatabase::deleteNote(const int note_id, const int64_t chat_id)
     return false;
 }
 
-bool ManagerDatabase::deleteAllMyNotes(const int64_t chat_id)
+bool ManagerDatabase::deleteAllNotes(const int64_t chat_id)
 {
     const bool retChat = deleteChat(chat_id);
     const bool retNeed = deleteNote(chat_id);
     return retChat && retNeed;
 }
 
-QStringList ManagerDatabase::getListMyNotes(const int64_t chat_id, const ManagerDatabase::TypeListMyNotes typeList)
+QStringList ManagerDatabase::getListNotes(const int64_t chat_id, const std::string group)
 {
-    const auto vecNeeds = getVecMyNotes(chat_id, typeList);
     QStringList list;
-    for (const auto &prayerNeed: vecNeeds) {
-        list.append(prayerNeed.need);
+    const auto vecNotess = getVecNotes(chat_id, group);
+    for (const auto &note: vecNotess) {
+        list.append(note.note);
     }
     return list;
 }
 
-QVector<ManagerDatabase::Note> ManagerDatabase::getVecMyNotes(const int64_t chat_id, const ManagerDatabase::TypeListMyNotes typeList)
+QStringList ManagerDatabase::getListGroups(const int64_t chat_id)
 {
-    QVector<Note> vec;
     QSqlQuery query;
-    if (typeList == TypeListMyNotes::PrayerNeedsWithoutAnswerOfGod) {
-        query.prepare("SELECT * FROM my_notes WHERE chat_id = :chat_id AND answer IS NULL");
-    }
-    else if (typeList == TypeListMyNotes::PrayerNeedsWithAnswerOfGod) {
-        query.prepare("SELECT * FROM my_notes WHERE (chat_id = :chat_id AND answer IS NOT NULL)");
-    }
-    else if (typeList == TypeListMyNotes::PrayerNeedsAll) {
-        query.prepare("SELECT * FROM my_notes WHERE (chat_id = :chat_id)");
-    }
+    query.prepare("SELECT group FROM my_notes WHERE (chat_id = :chat_id)");
     query.bindValue(":chat_id", varinatChatId(chat_id));
     if(!query.exec()){
         qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
         return {};
     }
+    QStringList list;
     const QSqlRecord record = query.record();
-    const int idNeedId = record.indexOf("need_id");
-    const int idNeed = record.indexOf("need");
-    const int idAnswer = record.indexOf("answer");
+    const int idGroup = record.indexOf("group");
     while (query.next())
     {
-        Note prayerNeed;
-        prayerNeed.need_id  = query.value(idNeedId).toString();
-        prayerNeed.note     = "◾️ " + query.value(idNeed).toString();
-        prayerNeed.answer   = query.value(idAnswer).toString();
+        const auto group = query.value(idGroup).toString();
+        if (!group.isEmpty()) {
+            list.append(group);
+        }
+    }
+    return list;
+}
+
+QVector<ManagerDatabase::OneNote> ManagerDatabase::getVecNotes(const int64_t chat_id, const std::string group)
+{
+    QVector<OneNote> vec;
+    QSqlQuery query;
+    query.prepare("SELECT * FROM my_notes WHERE chat_id = :chat_id AND group = :group");
+    query.bindValue(":chat_id", varinatChatId(chat_id));
+    query.bindValue(":group", QString::fromStdString(group));
+    if(!query.exec()){
+        qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
+        return {};
+    }
+    const QSqlRecord record = query.record();
+    const int idNoteId = record.indexOf("note_id");
+    const int idNote = record.indexOf("note");
+    const int idGroup = record.indexOf("group");
+    while (query.next())
+    {
+        OneNote prayerNeed;
+        prayerNeed.note_id  = query.value(idNoteId).toString();
+        prayerNeed.note     = "◾️ " + query.value(idNote).toString();
+        prayerNeed.group    = query.value(idGroup).toString();
         vec.append(prayerNeed);
     }
     return vec;
@@ -151,15 +167,15 @@ void ManagerDatabase::printDatabase() const
     qDebug() << "Begin" << __FUNCTION__;
     QSqlQuery query("SELECT * FROM my_notes");
     const QSqlRecord record = query.record();
-    const int idNeedId = record.indexOf("need_id");
-    const int idNeed = record.indexOf("need");
-    const int idAnswer = record.indexOf("answer");
+    const int idNoteId = record.indexOf("note_id");
+    const int idNote = record.indexOf("note");
+    const int idGroup = record.indexOf("group");
     const int idChat_id = record.indexOf("chat_id");
     while (query.next())
     {
-        const QString need_id = query.value(idNeedId).toString();
-        const QString need = query.value(idNeed).toString();
-        const QString answer = query.value(idAnswer).toString();
+        const QString need_id = query.value(idNoteId).toString();
+        const QString need = query.value(idNote).toString();
+        const QString answer = query.value(idGroup).toString();
         const int chat_id = query.value(idChat_id).toInt();
         qDebug() << QString("chat_id (%1) need_id (%2) need (%3) answer (%4)").arg(chat_id).arg(need_id, need, answer);
     }
@@ -214,11 +230,12 @@ bool ManagerDatabase::existsChatId(const int64_t chat_id) const
     return false;
 }
 
-bool ManagerDatabase::existsPrayerNeed(const QString &prayerNeed, const int64_t chat_id) const
+bool ManagerDatabase::existsNote(const QString &note, const QString &group, const int64_t chat_id) const
 {
     QSqlQuery query;
-    query.prepare("SELECT * FROM my_notes WHERE (need = ':prayerNeed' AND chat_id = :chat_id);");
-    query.bindValue(":prayerNeed", prayerNeed);
+    query.prepare("SELECT * FROM my_notes WHERE (note = ':note' AND group = :group AND chat_id = :chat_id);");
+    query.bindValue(":note", note);
+    query.bindValue(":group", group);
     query.bindValue(":chat_id", varinatChatId(chat_id));
     if (query.exec()){
         return query.next();

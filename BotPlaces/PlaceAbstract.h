@@ -30,9 +30,9 @@ protected:
     InlineKeyboardMarkup::Ptr createOneColumnInlineKeyboardMarkup(const QList<QPair<QString, QString> > &listButtonsNameData);
     InlineKeyboardMarkup::Ptr createInlineKeyboardMarkup(const QVector<QStringList> &vecLayouts);
 
-    ReplyKeyboardMarkup::Ptr getStartingButtons(const int64_t chat_id);
-    void sendStartingButtons(const std::int64_t chat_id);
-    void sendStartingMessage(const std::int64_t chat_id, const std::string &message);
+    ReplyKeyboardMarkup::Ptr getMainMenuButtons(const int64_t chat_id);
+    void sendMainMenuButtons(const std::int64_t chat_id);
+    void sendMainMenuMessage(const std::int64_t chat_id, const std::string &message);
     void sendInlineKeyboardMarkupMessage(const std::int64_t chat_id, const std::string &message, const InlineKeyboardMarkup::Ptr inlineKeyboardMarkup);
 
     inline bool chatContainsLastCommand(const std::int64_t chat_id, const Content::Command command){ return mapAllChats->value(chat_id).lastCommand == command; }

@@ -10,7 +10,8 @@
 #include "GlobalData/GlobalData.h"
 #include "Content/Content.h"
 #include "Content/ChatInfo.h"
-#include "BotPlaces/PlaceMyNotes/PlaceMyNotes.h"
+#include "BotPlaces/PlaceStart/placestart.h"
+#include "BotPlaces/PlaceNotes/PlaceNotes.h"
 #include "BotPlaces/PlaceAdditional/PlaceAdditional.h"
 
 #include <tgbot/tgbot.h>
@@ -39,7 +40,8 @@ private:
 private:
     ApplicationLogLib applicationLogLib;
     AppTranslator appTranslator;
-    PlaceMyNotes        *placeMyNotes ;
+    PlaceStart          *placeStart     ;
+    PlaceNotes          *placeNotes     ;
     PlaceAdditional     *placeAdditional;
     PlaceAbstract       *placeBot       ;
     std::shared_ptr<QMap<std::uint64_t, ChatInfo> > mapAllChats;
