@@ -130,6 +130,7 @@ InlineKeyboardMarkup::Ptr PlaceAbstract::createInlineKeyboardMarkup(const QVecto
 
 ReplyKeyboardMarkup::Ptr PlaceAbstract::getMainMenuButtons(const int64_t chat_id)
 {
+    static const QStringList buttonsAddRemove = { Content::getCommandStr(Content::Notes_AddNote), Content::getCommandStr(Content::Notes_RemoveNote) };
     const auto listGroups = managerDatabase->getListGroups(chat_id);
     QVector<QStringList> vecLayouts;
     if (listGroups.size() >= 1 && listGroups.size() <= 2) {
@@ -143,17 +144,15 @@ ReplyKeyboardMarkup::Ptr PlaceAbstract::getMainMenuButtons(const int64_t chat_id
             vecLayouts.append(listGroups);
         }
     }
-    static const QStringList buttonsAddRemove = { Content::getCommandStr(Content::Notes_AddNote), Content::getCommandStr(Content::Notes_RemoveNote) };
     vecLayouts.append(buttonsAddRemove);
-    static const auto kb = createReplyKeyboardMarkup(vecLayouts, true, false);
+    const auto kb = createReplyKeyboardMarkup(vecLayouts, true, false);
     return kb;
 }
 
 void PlaceAbstract::sendMainMenuButtons(const int64_t chat_id)
 {
-    static const QString answer { QObject::tr("Hello child of God. This bot is designed to make your prayer life effective. \n\nMay God bless you.") };
-    static const auto answerStdStr { answer.toStdString() };
-    bot->getApi().sendMessage(chat_id, answerStdStr, false, 0, getMainMenuButtons(chat_id));
+    static const auto answer { QObject::tr("Hello. This is note bot. You can create anonymous notes. \n\nMay God bless you.").toStdString() };
+    bot->getApi().sendMessage(chat_id, answer, false, 0, getMainMenuButtons(chat_id));
 }
 
 void PlaceAbstract::sendMainMenuMessage(const int64_t chat_id, const std::string &message)

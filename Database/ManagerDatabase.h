@@ -26,26 +26,32 @@ public:
 
     bool isOpen() const;
 
-    bool addNote(const QString &note, const QString group, const std::int64_t chat_id);
-    bool addNote(const std::string &note, const std::string &group, const std::int64_t chat_id);
+    bool addNote(const QString &note, const QString &group, const std::int64_t chat_id);
+    bool addNote(const std::string &note, const QString &group, const std::int64_t chat_id);
 
-    bool addAnswerOfGod(const QString &answer, const int need_id);
-    bool addAnswerOfGod(const std::string &answer, const int need_id);
+    bool addGroup(const QString &group, const std::int64_t chat_id);
+    bool addGroup(const std::string &group, const std::int64_t chat_id);
 
-    bool deleteNote(const int note_id, const std::int64_t chat_id);
+    bool replaceNote(const QString &newNote, const QString &oldNote, const QString &group, const std::int64_t chat_id);
 
+    bool existsGroup(const QString &group, const std::int64_t chat_id);
+    bool existsGroup(const std::string &group, const std::int64_t chat_id);
+
+    bool deleteAllNotes(const int note_id, const std::int64_t chat_id);
     bool deleteAllNotes(const std::int64_t chat_id);
 
-    QStringList getListNotes(const std::int64_t chat_id, const std::string group);
+    QStringList getListNotes(const std::string &group, const std::int64_t chat_id);
+    QVector<OneNote> getVecNotes(const std::string &group, const std::int64_t chat_id);
     QStringList getListGroups(const std::int64_t chat_id);
-    QVector<OneNote> getVecNotes(const std::int64_t chat_id, const std::string group);
+
     void printDatabase() const;
 private:
     bool inserNewChat(const std::int64_t chat_id);
     bool deleteChat(const std::int64_t chat_id);
-    bool deleteNote(const std::int64_t chat_id);
+    bool deleteNotes(const std::int64_t chat_id);
     bool existsChatId(const std::int64_t chat_id) const;
     bool existsNote(const QString &note, const QString &group, const std::int64_t chat_id) const;
+    int replaceNullOrExistsNote(const QString &newNote, const QString &group, const std::int64_t chat_id);
 
     inline QVariant varinatChatId(const std::int64_t chat_id) const { return QVariant::fromValue(chat_id); }
 

@@ -20,6 +20,7 @@ private:
     void onNewGroupCallbackQuery(const CallbackQuery::Ptr &callbackQuery);
     void onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery);
 
-    std::string getListPrayerNeeds(const Message::Ptr &message);
+    std::string getListNotes(const QString &group, const std::int64_t chat_id);
+    std::string getListNotes(const std::string &group, const std::int64_t chat_id);
 };
 

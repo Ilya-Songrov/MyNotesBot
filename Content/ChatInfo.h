@@ -21,6 +21,6 @@ public:
     Content::Command    lastCommand     = Content::Command::MultiPlace_AnyMessage;
     Content::Place      currentPlace    = Content::Place::MultiPlace;
     Content::Command    currentCommand  = Content::Command::MultiPlace_AnyMessage;
-    QString lastGroup;
+    QString             lastGroup       ;
 };
 

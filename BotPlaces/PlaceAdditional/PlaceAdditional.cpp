@@ -107,7 +107,7 @@ void PlaceAdditional::onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery
         bool ok;
         const int need_id = QString::fromStdString(callbackQuery->data).toInt(&ok);
         if (ok) {
-            managerDatabase->deleteNote(need_id, chat_id);
+            managerDatabase->deleteAllNotes(need_id, chat_id);
         }
         bot->getApi().answerCallbackQuery(callbackQuery->id);
         sendMainMenuMessage(chat_id, answer);

@@ -35,7 +35,9 @@ protected:
     void sendMainMenuMessage(const std::int64_t chat_id, const std::string &message);
     void sendInlineKeyboardMarkupMessage(const std::int64_t chat_id, const std::string &message, const InlineKeyboardMarkup::Ptr inlineKeyboardMarkup);
 
-    inline bool chatContainsLastCommand(const std::int64_t chat_id, const Content::Command command){ return mapAllChats->value(chat_id).lastCommand == command; }
+    inline void setChatInfo(const std::int64_t chat_id, const ChatInfo &chatInfo){ mapAllChats->insert(chat_id, chatInfo); }
+    inline ChatInfo getChatInfo(const std::int64_t chat_id){ return mapAllChats->value(chat_id); }
+    inline bool chatContainsLastCommand(const std::int64_t chat_id, const Content::Command command){ return getChatInfo(chat_id).lastCommand == command; }
 
 protected:
     static std::shared_ptr<QMap<std::uint64_t, ChatInfo> > mapAllChats;

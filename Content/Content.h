@@ -38,6 +38,7 @@ public:
         Notes_RemoveNote,
         Notes_ListNotesOfGroup,
         Notes_NewGroup,
+        Notes_GroupWasSelected,
 
         Additional_Additional,
         Additional_ShowHistory,

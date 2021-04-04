@@ -15,6 +15,8 @@ void Content::initContent()
     vecPlaceCommand = {
         {   Content::PlaceCommand(Content::Place::MultiPlace, Content::NoCommand), {} },
 
+        {   Content::PlaceCommand(Content::Place::Start, Content::Start_ChooseLanguage), "/start" },
+
         {   Content::PlaceCommand(Content::Place::Notes, Content::Notes_AddNote), "🗒 " + QObject::tr("Add note") },
         {   Content::PlaceCommand(Content::Place::Notes, Content::Notes_RemoveNote), "🗒 " + QObject::tr("Remove note") },
         {   Content::PlaceCommand(Content::Place::Notes, Content::Notes_NewGroup),  QObject::tr("New group") },
@@ -25,7 +27,6 @@ void Content::initContent()
         {   Content::PlaceCommand(Content::Place::Additional, Content::Additional_DeleteHistory), QObject::tr("Delete history") + " 📍" },
         {   Content::PlaceCommand(Content::Place::Additional, Content::Additional_Developer), QObject::tr("Developer") + " 📍" },
 
-        {   Content::PlaceCommand(Content::Place::MultiPlace, Content::MultiPlace_Start), "/start" },
         {   Content::PlaceCommand(Content::Place::MultiPlace, Content::MultiPlace_Help), "/help" },
     };
 }

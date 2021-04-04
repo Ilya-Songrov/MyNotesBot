@@ -71,7 +71,7 @@ void ManagerBot::callbackQueryWasWrite(const CallbackQuery::Ptr callbackQuery)
 ChatInfo ManagerBot::getChatInfo(const int64_t chat_id, const std::string &currentText)
 {
     const Content::PlaceCommand currentPlaceCommand = Content::getPlaceCommand(currentText);
-    ChatInfo chatInfo = mapAllChats->value(chat_id);
+    ChatInfo chatInfo =     mapAllChats->value(chat_id);
     chatInfo.lastPlace      = chatInfo.currentPlace;
     chatInfo.lastCommand    = chatInfo.currentCommand;
     chatInfo.currentPlace   = currentPlaceCommand.place;
@@ -81,17 +81,17 @@ ChatInfo ManagerBot::getChatInfo(const int64_t chat_id, const std::string &curre
 
 void ManagerBot::changeObjPtrPlaceBot(const Content::Place place)
 {
-    switch (place) {
-    case Content::Place::Notes:
+    if (place == Content::Place::Start) {
+        placeBot = placeStart;
+    }
+    else if (place == Content::Place::Notes) {
         placeBot = placeNotes;
-        break;
-    case Content::Place::Additional:
+    }
+    else if (place == Content::Place::Additional) {
         placeBot = placeAdditional;
-        break;
-    case Content::Place::MultiPlace:
-        break;
-    default:
-        break;
+    }
+    else {
+        placeBot = placeNotes;
     }
 }
 
@@ -110,11 +110,11 @@ void ManagerBot::printChatInfo(const QString &header, const ChatInfo &chatInfo, 
     const QString frameHeader = QString(header).leftJustified(justified, '-').rightJustified(lenghtSymbols, placeholder);
 
     qDebug() << frameHeader << Qt::endl;
-    qDebug() << "lastPlace      :" << chatInfo.lastPlace        ;
-    qDebug() << "lastCommand    :" << chatInfo.lastCommand      ;
     qDebug() << "currentPlace   :" << chatInfo.currentPlace     ;
     qDebug() << "currentCommand :" << chatInfo.currentCommand   ;
-    qDebug() << "lastNeedId     :" << chatInfo.lastNeedId       ;
+    qDebug() << "lastPlace      :" << chatInfo.lastPlace        ;
+    qDebug() << "lastCommand    :" << chatInfo.lastCommand      ;
+    qDebug() << "lastGroup      :" << chatInfo.lastGroup        ;
     qDebug() << "messageText    :" << messageText.c_str()       ;
     qDebug() << Qt::endl << frameHeader << Qt::endl;
 }
