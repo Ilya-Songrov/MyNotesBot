@@ -38,10 +38,10 @@ public:
     bool existsGroup(const std::string &group, const std::int64_t chat_id);
 
     bool deleteAllNotes(const int note_id, const std::int64_t chat_id);
-    bool deleteAllNotes(const std::int64_t chat_id);
+    bool deleteAllNotes(const QString &group, const std::int64_t chat_id);
 
     QStringList getListNotes(const std::string &group, const std::int64_t chat_id);
-    QVector<OneNote> getVecNotes(const std::string &group, const std::int64_t chat_id);
+    QVector<OneNote> getVecNotes(const QString &group, const std::int64_t chat_id);
     QStringList getListGroups(const std::int64_t chat_id);
 
     void printDatabase() const;

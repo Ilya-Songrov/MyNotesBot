@@ -37,8 +37,10 @@ public:
         Notes_AddNote,
         Notes_RemoveNote,
         Notes_ListNotesOfGroup,
-        Notes_NewGroup,
-        Notes_GroupWasSelected,
+        Notes_CreateGroup,
+        Notes_RemoveGroup,
+        Notes_GroupWasSelectedToAdd,
+        Notes_GroupWasSelectedToRemove,
 
         Additional_Additional,
         Additional_ShowHistory,

@@ -15,9 +15,8 @@ public:
 private:
     void onAddNote(const Message::Ptr &message);
     void onRemoveNote(const Message::Ptr &message);
-    void onListPrayerNeed(const Message::Ptr &message);
     void onAnyMessage(const Message::Ptr &message);
-    void onNewGroupCallbackQuery(const CallbackQuery::Ptr &callbackQuery);
+    void onCreateGroupCallbackQuery(const CallbackQuery::Ptr &callbackQuery);
     void onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery);
 
     std::string getListNotes(const QString &group, const std::int64_t chat_id);

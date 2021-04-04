@@ -91,7 +91,6 @@ bool ManagerDatabase::replaceNote(const QString &newNote, const QString &oldNote
         qWarning() << __FUNCTION__ << "failed: value cannot be empty" << Qt::endl;
         return false;
     }
-    printDatabase();
     QSqlQuery query;
     query.prepare("UPDATE my_notes SET note = :oldNote WHERE note = :newNote AND group_note = :group_note AND chat_id = :chat_id ");
     query.bindValue(":oldNote", oldNote);
@@ -99,7 +98,6 @@ bool ManagerDatabase::replaceNote(const QString &newNote, const QString &oldNote
     query.bindValue(":group_note", group);
     query.bindValue(":chat_id", varinatChatId(chat_id));
     if(query.exec()){
-        printDatabase();
         return true;
     }
     qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
@@ -108,7 +106,6 @@ bool ManagerDatabase::replaceNote(const QString &newNote, const QString &oldNote
 
 bool ManagerDatabase::existsGroup(const QString &group, const int64_t chat_id)
 {
-    printDatabase();
     QSqlQuery query;
     query.prepare("SELECT * FROM my_notes WHERE chat_id = :chat_id AND group_note = :group_note");
     query.bindValue(":chat_id", varinatChatId(chat_id));
@@ -125,34 +122,16 @@ bool ManagerDatabase::existsGroup(const std::string &group, const int64_t chat_i
     return existsGroup(QString::fromStdString(group), chat_id);
 }
 
-//bool ManagerDatabase::addAnswerOfGod(const QString &answer, const int need_id)
-//{
-//    if (answer.isEmpty()){
-//        qWarning() << __FUNCTION__ << "failed: value cannot be empty" << Qt::endl;
-//        return false;
-//    }
-//    QSqlQuery query;
-//    query.prepare("UPDATE my_notes SET answer = :answer WHERE need_id = :need_id");
-//    query.bindValue(":answer", answer);
-//    query.bindValue(":need_id", need_id);
-//    if(query.exec()){
-//        printDatabase();
-//        return true;
-//    }
-//    qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
-//    return false;
-//}
-
 bool ManagerDatabase::deleteAllNotes(const int note_id, const int64_t chat_id)
 {
-    if (note_id == -1){
+    if (note_id < 0){
         qWarning() << __FUNCTION__ << "failed: value cannot be -1" << Qt::endl;
         return false;
     }
     QSqlQuery query;
-    query.prepare("DELETE FROM my_notes WHERE (need_id = :need_id AND chat_id = :chat_id)");
+    query.prepare("DELETE FROM my_notes WHERE (note_id = :note_id AND chat_id = :chat_id)");
     query.bindValue(":chat_id", varinatChatId(chat_id));
-    query.bindValue(":need_id", note_id);
+    query.bindValue(":note_id", note_id);
     if(query.exec()){
         return true;
     }
@@ -160,30 +139,40 @@ bool ManagerDatabase::deleteAllNotes(const int note_id, const int64_t chat_id)
     return false;
 }
 
-bool ManagerDatabase::deleteAllNotes(const int64_t chat_id)
+bool ManagerDatabase::deleteAllNotes(const QString &group, const int64_t chat_id)
 {
-    const bool retChat = deleteChat(chat_id);
-    const bool retNeed = deleteNotes(chat_id);
-    return retChat && retNeed;
+    if (group.isEmpty()){
+        qWarning() << __FUNCTION__ << "failed: value cannot be -1" << Qt::endl;
+        return false;
+    }
+    QSqlQuery query;
+    query.prepare("DELETE FROM my_notes WHERE (group_note = :group_note AND chat_id = :chat_id)");
+    query.bindValue(":group_note", group);
+    query.bindValue(":chat_id", varinatChatId(chat_id));
+    if(query.exec()){
+        return true;
+    }
+    qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
+    return false;
 }
 
 QStringList ManagerDatabase::getListNotes(const std::string &group, const int64_t chat_id)
 {
     QStringList list;
-    const auto vecNotess = getVecNotes(group, chat_id);
+    const auto vecNotess = getVecNotes(QString::fromStdString(group), chat_id);
     for (const auto &note: vecNotess) {
         list.append(note.note);
     }
     return list;
 }
 
-QVector<ManagerDatabase::OneNote> ManagerDatabase::getVecNotes(const std::string &group, const int64_t chat_id)
+QVector<ManagerDatabase::OneNote> ManagerDatabase::getVecNotes(const QString &group, const int64_t chat_id)
 {
     QVector<OneNote> vec;
     QSqlQuery query;
     query.prepare("SELECT * FROM my_notes WHERE chat_id = :chat_id AND group_note = :group_note");
     query.bindValue(":chat_id", varinatChatId(chat_id));
-    query.bindValue(":group_note", QString::fromStdString(group));
+    query.bindValue(":group_note", group);
     if(!query.exec()){
         qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
         return {};
@@ -316,7 +305,7 @@ int ManagerDatabase::replaceNullOrExistsNote(const QString &newNote, const QStri
         return false;
     }
     QSqlQuery query;
-    query.prepare("UPDATE my_notes SET note = :newNote WHERE note IS NULL OR (note = :newNote AND group_note = :group_note AND chat_id = :chat_id)");
+    query.prepare("UPDATE my_notes SET note = :newNote WHERE (note IS NULL OR note = :newNote) AND (group_note = :group_note AND chat_id = :chat_id)");
     query.bindValue(":newNote", newNote);
     query.bindValue(":group_note", group);
     query.bindValue(":chat_id", varinatChatId(chat_id));

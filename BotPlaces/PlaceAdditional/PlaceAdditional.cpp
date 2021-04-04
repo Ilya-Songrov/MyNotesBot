@@ -87,10 +87,10 @@ void PlaceAdditional::onDeletePrayerNeed(const CallbackQuery::Ptr &callbackQuery
 
 void PlaceAdditional::onDeleteHistory(const CallbackQuery::Ptr &callbackQuery)
 {
-    static const auto answer { QObject::tr("Your all prayer needs has deleted").toStdString() };
-    managerDatabase->deleteAllNotes(callbackQuery->message->chat->id);
-    bot->getApi().answerCallbackQuery(callbackQuery->id);
-    sendMainMenuMessage(callbackQuery->message->chat->id, answer);
+//    static const auto answer { QObject::tr("Your all prayer needs has deleted").toStdString() };
+//    managerDatabase->deleteAllNotes(callbackQuery->message->chat->id);
+//    bot->getApi().answerCallbackQuery(callbackQuery->id);
+//    sendMainMenuMessage(callbackQuery->message->chat->id, answer);
 }
 
 void PlaceAdditional::onDeveloper(const CallbackQuery::Ptr &callbackQuery)
