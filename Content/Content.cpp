@@ -24,7 +24,6 @@ void Content::initContent()
 
         {   Content::PlaceCommand(Content::Place::Additional, Content::Additional_Additional), "🔹 " + QObject::tr("Additional") },
         {   Content::PlaceCommand(Content::Place::Additional, Content::Additional_ShowHistory), QObject::tr("Show history") + " 📍" },
-        {   Content::PlaceCommand(Content::Place::Additional, Content::Additional_DeletePrayerNeed), QObject::tr("Delete prayer need") + " 📍" },
         {   Content::PlaceCommand(Content::Place::Additional, Content::Additional_DeleteHistory), QObject::tr("Delete history") + " 📍" },
         {   Content::PlaceCommand(Content::Place::Additional, Content::Additional_Developer), QObject::tr("Developer") + " 📍" },
 

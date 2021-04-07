@@ -183,11 +183,15 @@ QVector<ManagerDatabase::OneNote> ManagerDatabase::getVecNotes(const QString &gr
     const int idGroup = record.indexOf("group_note");
     while (query.next())
     {
-        OneNote prayerNeed;
-        prayerNeed.note_id  = query.value(idNoteId).toString();
-        prayerNeed.note     = "◾️ " + query.value(idNote).toString();
-        prayerNeed.group    = query.value(idGroup).toString();
-        vec.append(prayerNeed);
+        const QString strNote = query.value(idNote).toString();
+        if (strNote.isEmpty()) {
+            continue;
+        }
+        OneNote note;
+        note.note     = "◾️ " + strNote;
+        note.group    = query.value(idGroup).toString();
+        note.note_id  = query.value(idNoteId).toString();
+        vec.append(note);
     }
     return vec;
 }

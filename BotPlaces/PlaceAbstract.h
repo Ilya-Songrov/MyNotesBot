@@ -37,6 +37,10 @@ protected:
 
     inline void setChatInfo(const std::int64_t chat_id, const ChatInfo &chatInfo){ mapAllChats->insert(chat_id, chatInfo); }
     inline ChatInfo getChatInfo(const std::int64_t chat_id){ return mapAllChats->value(chat_id); }
+    void updateCahtInfoLastGroup(const std::int64_t chat_id, const QString &lastGroup);
+    void updateCahtInfoCurrentCommand(const std::int64_t chat_id, const Content::Command currentCommand);
+    void updateCahtInfoCurrentCommandAndLastGroup(const std::int64_t chat_id, const Content::Command currentCommand, const QString &lastGroup);
+
     inline bool chatContainsLastCommand(const std::int64_t chat_id, const Content::Command command){ return getChatInfo(chat_id).lastCommand == command; }
 
 protected:

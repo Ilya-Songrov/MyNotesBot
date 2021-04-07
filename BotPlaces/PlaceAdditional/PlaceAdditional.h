@@ -16,7 +16,6 @@ private:
     void onAdditional(const Message::Ptr &message);
     void onAnyMessage(const Message::Ptr &message);
     void onShowHistory(const CallbackQuery::Ptr &callbackQuery);
-    void onDeletePrayerNeed(const CallbackQuery::Ptr &callbackQuery);
     void onDeleteHistory(const CallbackQuery::Ptr &callbackQuery);
     void onDeveloper(const CallbackQuery::Ptr &callbackQuery);
     void onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery);

@@ -71,7 +71,7 @@ RESOURCES += \
     Resources/translationFiles/translationFiles.qrc
 
 TRANSLATIONS += \
-    Resources/translationFiles/appTranslator_ru_UA.ts \
+    Resources/translationFiles/NoteBot_UA.ts \
 
 
 ### ApplicationLogLib ###
@@ -87,3 +87,10 @@ unix:!macx: PRE_TARGETDEPS += $$PWD/ApplicationLogLib/libApplicationLogLib.so
 QMAKE_RPATHDIR += ":'\$$ORIGIN'"            # OR
 ### ApplicationLogLib ###
 
+
+### cqtdeployer ###
+CONFIG(release, debug | release) {
+QMAKE_POST_LINK=/bin/bash -c \"cqtdeployer -bin $${OUT_PWD}/$${TARGET} -targetDir DeployKit_$${TARGET} -qmake $${QMAKE_QMAKE} -libDir $${PWD} \
+                               -recursiveDepth 10 -qmlDir $${PWD} force-clear ; \"
+}
+### cqtdeployer ###

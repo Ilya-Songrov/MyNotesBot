@@ -44,7 +44,6 @@ public:
 
         Additional_Additional,
         Additional_ShowHistory,
-        Additional_DeletePrayerNeed,
         Additional_DeleteHistory,
         Additional_Developer,
     };

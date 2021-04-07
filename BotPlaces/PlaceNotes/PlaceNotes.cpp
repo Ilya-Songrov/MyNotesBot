@@ -41,58 +41,29 @@ void PlaceNotes::onAddNote(const Message::Ptr &message)
     static const auto createGroup = Content::getCommandStr(Content::Notes_CreateGroup);
     auto list = managerDatabase->getListGroups(message->chat->id);
     list.append(createGroup);
-    const auto inlineButtonPrayerNeed = createOneColumnInlineKeyboardMarkup(list);
-    sendInlineKeyboardMarkupMessage(message->chat->id, answer, inlineButtonPrayerNeed);
+    const auto inlineButtonNotes = createOneColumnInlineKeyboardMarkup(list);
+    sendInlineKeyboardMarkupMessage(message->chat->id, answer, inlineButtonNotes);
 }
 
 void PlaceNotes::onRemoveNote(const Message::Ptr &message)
 {
-    //    static const auto answer { QObject::tr("Select the prayer need:").toStdString() };
-    //    const auto vec = managerDatabase->getVecNotes(message->chat->id);
-    //    QList<QPair<QString, QString> > listButtons;
-    //    for (const auto &n: vec) {
-    //        listButtons.append(qMakePair(n.need.left(15) + " ...", n.need_id));
-    //    }
-    //    const auto inlineButtonPrayerNeed = createOneColumnInlineKeyboardMarkup(listButtons);
-    //    sendInlineKeyboardMarkupMessage(message->chat->id, answer, inlineButtonPrayerNeed);
-
     const auto chat_id = message->chat->id;
     static const auto answer { QObject::tr("Select group:").toStdString() };
     const auto list = managerDatabase->getListGroups(chat_id);
-    const auto inlineButtonPrayerNeed = createOneColumnInlineKeyboardMarkup(list);
-    sendInlineKeyboardMarkupMessage(chat_id, answer, inlineButtonPrayerNeed);
+    const auto inlineButtonNotes = createOneColumnInlineKeyboardMarkup(list);
+    sendInlineKeyboardMarkupMessage(chat_id, answer, inlineButtonNotes);
 }
-//void PlaceAdditional::onDeletePrayerNeed(const CallbackQuery::Ptr &callbackQuery)
-//{
-//    static const auto answer { QObject::tr("Select the prayer need:").toStdString() };
-//    const auto vecNeeds = managerDatabase->getVecPrayerNeeds(callbackQuery->message->chat->id);
-//    QList<QPair<QString, QString> > listButtons;
-//    for (const auto &prayerNeed: vecNeeds) {
-//        listButtons.append(qMakePair(prayerNeed.need.left(15) + " ...", prayerNeed.need_id));
-//    }
-//    const auto inlineButtonPrayerNeed = createOneColumnInlineKeyboardMarkup(listButtons);
-//    bot->getApi().answerCallbackQuery(callbackQuery->id);
-//    sendInlineKeyboardMarkupMessage(callbackQuery->message->chat->id, answer, inlineButtonPrayerNeed);
-//}
-//const auto chat_id = callbackQuery->message->chat->id;
-//if (chatContainsLastCommand(chat_id, Content::Additional_DeletePrayerNeed)) {
-//    static const auto answer { QObject::tr("Prayer need has been successfully removed!").toStdString() };
-//    bool ok;
-//    const int need_id = QString::fromStdString(callbackQuery->data).toInt(&ok);
-//    if (ok) {
-//        managerDatabase->deletePrayerNeed(need_id, chat_id);
-//    }
-//    bot->getApi().answerCallbackQuery(callbackQuery->id);
-//    sendStartingMessage(chat_id, answer);
-//}
 
 void PlaceNotes::onAnyMessage(const Message::Ptr &message)
 {
     const auto chat_id = message->chat->id;
     if (chatContainsLastCommand(chat_id, Content::Notes_CreateGroup)) {
-        static const auto answer { QObject::tr("Your group was ").toStdString() };
-        const bool ret = managerDatabase->addGroup(message->text, chat_id);
-        sendMainMenuMessage(chat_id, answer + (ret ? "created" : "not created"));
+        static const auto answerCreated { QObject::tr("New group was created").toStdString() };
+        static const auto answerNotCreated { QObject::tr("New group was not created").toStdString() };
+        const QString group = QString::fromStdString(message->text);
+        const bool ret = managerDatabase->addGroup(group, chat_id);
+        updateCahtInfoLastGroup(chat_id, ret ? "" : group);
+        sendMainMenuMessage(chat_id, ret ? answerCreated : answerNotCreated);
     }
     else if (chatContainsLastCommand(chat_id, Content::Notes_GroupWasSelectedToAdd)) {
         const auto lastGroup = getChatInfo(chat_id).lastGroup;
@@ -102,9 +73,7 @@ void PlaceNotes::onAnyMessage(const Message::Ptr &message)
         sendMainMenuMessage(chat_id, getListNotes(lastGroup, chat_id));
     }
     else if (managerDatabase->existsGroup(message->text, chat_id)) {
-        auto chatInfo       = getChatInfo(chat_id);
-        chatInfo.lastGroup  = QString::fromStdString(message->text);
-        setChatInfo(chat_id, chatInfo);
+        updateCahtInfoLastGroup(chat_id, QString::fromStdString(message->text));
         sendMainMenuMessage(chat_id, getListNotes(message->text, chat_id));
     }
     else if (QString::fromStdString(message->text).toLower() == "ping") {
@@ -132,19 +101,16 @@ void PlaceNotes::onCreateGroupCallbackQuery(const CallbackQuery::Ptr &callbackQu
 
 void PlaceNotes::onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery)
 {
-    static const auto removeGroup = Content::getCommandStr(Content::Notes_RemoveGroup);
     const auto chat_id = callbackQuery->message->chat->id;
     const auto data = QString::fromStdString(callbackQuery->data);
     if (chatContainsLastCommand(chat_id, Content::Notes_AddNote)) {
         static const auto answer { QObject::tr("Write your note:").toStdString() };
-        auto chatInfo           = getChatInfo(chat_id);
-        chatInfo.currentCommand = Content::Command::Notes_GroupWasSelectedToAdd;
-        chatInfo.lastGroup      = data;
-        setChatInfo(chat_id, chatInfo);
+        updateCahtInfoCurrentCommandAndLastGroup(chat_id, Content::Command::Notes_GroupWasSelectedToAdd, data);
         bot->getApi().answerCallbackQuery(callbackQuery->id);
         bot->getApi().sendMessage(chat_id, answer);
     }
     else if (chatContainsLastCommand(chat_id, Content::Notes_RemoveNote)) {
+        static const auto removeGroup = Content::getCommandStr(Content::Notes_RemoveGroup);
         static const auto answer { QObject::tr("Select the note:").toStdString() };
         const auto vecNotes = managerDatabase->getVecNotes(data, chat_id);
         QList<QPair<QString, QString> > listButtons;
@@ -152,30 +118,31 @@ void PlaceNotes::onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery)
             listButtons.append(qMakePair(note.note.left(15) + " ...", note.note_id));
         }
         listButtons.append(qMakePair(removeGroup, data));
-        const auto inlineButtonPrayerNeed = createOneColumnInlineKeyboardMarkup(listButtons);
-        auto chatInfo           = getChatInfo(chat_id);
-        chatInfo.currentCommand = Content::Command::Notes_GroupWasSelectedToRemove;
-        chatInfo.lastGroup      = data;
-        setChatInfo(chat_id, chatInfo);
+        const auto inlineButtonNotes = createOneColumnInlineKeyboardMarkup(listButtons);
+        updateCahtInfoCurrentCommandAndLastGroup(chat_id, Content::Command::Notes_GroupWasSelectedToRemove, data);
         bot->getApi().answerCallbackQuery(callbackQuery->id);
-        sendInlineKeyboardMarkupMessage(callbackQuery->message->chat->id, answer, inlineButtonPrayerNeed);
+        sendInlineKeyboardMarkupMessage(callbackQuery->message->chat->id, answer, inlineButtonNotes);
     }
     else if (chatContainsLastCommand(chat_id, Content::Notes_GroupWasSelectedToRemove)) {
         bool ret = false;
         std::string answer;
-        qDebug() << "datadata" << data << Qt::endl;
-        if (data == removeGroup) {
+        if (getChatInfo(chat_id).lastGroup == data) {
+            static const auto answerGroupRemoved { QObject::tr("Group has been removed").toStdString() };
+            static const auto answerGroupNotRemoved { QObject::tr("Group has been not removed").toStdString() };
             const QString group = data;
             ret = managerDatabase->deleteAllNotes(group, chat_id);
-            answer = QObject::tr("Group has been %1 removed!").arg(ret ? "" : "not").toStdString();
+            updateCahtInfoLastGroup(chat_id, ret ? "" : group);
+            answer = ret ? answerGroupRemoved : answerGroupNotRemoved;
         }
         else{
+            static const auto answerNoteRemoved { QObject::tr("Note has been removed").toStdString() };
+            static const auto answerNoteNotRemoved { QObject::tr("Note has been not removed").toStdString() };
             bool ok;
             const int note_id = QString::fromStdString(callbackQuery->data).toInt(&ok);
             if (ok) {
                 ret = managerDatabase->deleteAllNotes(note_id, chat_id);
             }
-            answer = QObject::tr("Note has been %1 removed!").arg(ret ? "" : "not").toStdString();
+            answer = ret ? answerNoteRemoved : answerNoteNotRemoved;
         }
         bot->getApi().answerCallbackQuery(callbackQuery->id);
         sendMainMenuMessage(chat_id, answer);

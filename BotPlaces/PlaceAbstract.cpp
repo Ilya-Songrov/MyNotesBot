@@ -164,3 +164,26 @@ void PlaceAbstract::sendInlineKeyboardMarkupMessage(const int64_t chat_id, const
 {
     bot->getApi().sendMessage(chat_id, message, false, 0, inlineKeyboardMarkup);
 }
+
+void PlaceAbstract::updateCahtInfoLastGroup(const int64_t chat_id, const QString &lastGroup)
+{
+    auto chatInfo = getChatInfo(chat_id);
+    chatInfo.lastGroup = lastGroup;
+    setChatInfo(chat_id, chatInfo);
+}
+
+void PlaceAbstract::updateCahtInfoCurrentCommand(const int64_t chat_id, const Content::Command currentCommand)
+{
+    auto chatInfo = getChatInfo(chat_id);
+    chatInfo.currentCommand = currentCommand;
+    setChatInfo(chat_id, chatInfo);
+}
+
+void PlaceAbstract::updateCahtInfoCurrentCommandAndLastGroup(const int64_t chat_id, const Content::Command currentCommand, const QString &lastGroup)
+{
+    auto chatInfo = getChatInfo(chat_id);
+    chatInfo.currentCommand = currentCommand;
+    chatInfo.lastGroup = lastGroup;
+    setChatInfo(chat_id, chatInfo);
+}
+
