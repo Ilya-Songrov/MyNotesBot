@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     try {
         ApplicationNotify<QCoreApplication> app(argc, argv);
         app.setApplicationVersion(APP_VERSION);
-        QObject::connect(&Errors::getInstance(), &Errors::signalExceptionOccurred, &app, &decltype(app)::quit);
+//        QObject::connect(&Errors::getInstance(), &Errors::signalExceptionOccurred, &app, &decltype(app)::quit);
 
         QCommandLineParser parser;
         parser.setApplicationDescription("App description");
