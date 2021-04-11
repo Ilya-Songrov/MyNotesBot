@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QCoreApplication>
 
-#include <ManagerDatabase.h>
+#include <managerdatabase.h>
 #include <tgbot/tgbot.h>
 using namespace TgBot;
 

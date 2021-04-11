@@ -5,33 +5,32 @@ PlaceNotes::PlaceNotes(QObject *parent) : PlaceAbstract(parent)
 
 }
 
-void PlaceNotes::slotOnCommand(const Message::Ptr &message, const ChatInfo &chatInfo)
+void PlaceNotes::slotOnCommand(const Message::Ptr &message, const ChatActions &chatActions)
 {
-    switch (chatInfo.currentCommand) {
-    case Content::Notes_AddNote:
+    if (chatActions.currentCommand == Content::Notes_AddNote) {
         onAddNote(message);
-        break;
-    case Content::Notes_RemoveNote:
+    }
+    else if (chatActions.currentCommand == Content::Notes_RemoveNote) {
         onRemoveNote(message);
-        break;
-    case Content::MultiPlace_AnyMessage:
+    }
+    else if (chatActions.currentCommand == Content::MultiPlace_AnyMessage) {
         onAnyMessage(message);
-        break;
-    default:
-        PlaceAbstract::slotOnCommand(message, chatInfo);
+    }
+    else{
+        PlaceAbstract::slotOnCommand(message, chatActions);
     }
 }
 
-void PlaceNotes::slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatInfo &chatInfo)
+void PlaceNotes::slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatActions &chatActions)
 {
-    if (chatInfo.currentCommand == Content::Notes_CreateGroup) {
+    if (chatActions.currentCommand == Content::Notes_CreateGroup) {
         onCreateGroupCallbackQuery(callbackQuery);
     }
-    else if (chatInfo.currentCommand == Content::MultiPlace_AnyCallbackQuery) {
+    else if (chatActions.currentCommand == Content::MultiPlace_AnyCallbackQuery) {
         onAnyCallbackQuery(callbackQuery);
     }
     else{
-        PlaceAbstract::slotOnCallbackQuery(callbackQuery, chatInfo);
+        PlaceAbstract::slotOnCallbackQuery(callbackQuery, chatActions);
     }
 }
 
@@ -62,25 +61,25 @@ void PlaceNotes::onAnyMessage(const Message::Ptr &message)
         static const auto answerNotCreated { QObject::tr("New group was not created").toStdString() };
         const QString group = QString::fromStdString(message->text);
         const bool ret = managerDatabase->addGroup(group, chat_id);
-        updateCahtInfoLastGroup(chat_id, ret ? "" : group);
+        updateChatActionsLastGroup(chat_id, ret ? "" : group);
         sendMainMenuMessage(chat_id, ret ? answerCreated : answerNotCreated);
     }
     else if (chatContainsLastCommand(chat_id, Content::Notes_GroupWasSelectedToAdd)) {
-        const auto lastGroup = getChatInfo(chat_id).lastGroup;
+        const auto lastGroup = getChatActions(chat_id).lastGroup;
         if (!lastGroup.isEmpty()) {
             managerDatabase->addNote(message->text, lastGroup, chat_id);
         }
         sendMainMenuMessage(chat_id, getListNotes(lastGroup, chat_id));
     }
     else if (managerDatabase->existsGroup(message->text, chat_id)) {
-        updateCahtInfoLastGroup(chat_id, QString::fromStdString(message->text));
+        updateChatActionsLastGroup(chat_id, QString::fromStdString(message->text));
         sendMainMenuMessage(chat_id, getListNotes(message->text, chat_id));
     }
     else if (QString::fromStdString(message->text).toLower() == "ping") {
         sendMainMenuMessage(chat_id, "Pong!");
     }
     else{
-        const auto lastGroup = getChatInfo(chat_id).lastGroup;
+        const auto lastGroup = getChatActions(chat_id).lastGroup;
         if (!lastGroup.isEmpty()) {
             managerDatabase->addNote(message->text, lastGroup, chat_id);
             sendMainMenuMessage(chat_id, getListNotes(lastGroup, chat_id));
@@ -105,7 +104,7 @@ void PlaceNotes::onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery)
     const auto data = QString::fromStdString(callbackQuery->data);
     if (chatContainsLastCommand(chat_id, Content::Notes_AddNote)) {
         static const auto answer { QObject::tr("Write your note:").toStdString() };
-        updateCahtInfoCurrentCommandAndLastGroup(chat_id, Content::Command::Notes_GroupWasSelectedToAdd, data);
+        updateChatActionsCurrentCommandAndLastGroup(chat_id, Content::Command::Notes_GroupWasSelectedToAdd, data);
         bot->getApi().answerCallbackQuery(callbackQuery->id);
         bot->getApi().sendMessage(chat_id, answer);
     }
@@ -119,19 +118,19 @@ void PlaceNotes::onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery)
         }
         listButtons.append(qMakePair(removeGroup, data));
         const auto inlineButtonNotes = createOneColumnInlineKeyboardMarkup(listButtons);
-        updateCahtInfoCurrentCommandAndLastGroup(chat_id, Content::Command::Notes_GroupWasSelectedToRemove, data);
+        updateChatActionsCurrentCommandAndLastGroup(chat_id, Content::Command::Notes_GroupWasSelectedToRemove, data);
         bot->getApi().answerCallbackQuery(callbackQuery->id);
         sendInlineKeyboardMarkupMessage(callbackQuery->message->chat->id, answer, inlineButtonNotes);
     }
     else if (chatContainsLastCommand(chat_id, Content::Notes_GroupWasSelectedToRemove)) {
         bool ret = false;
         std::string answer;
-        if (getChatInfo(chat_id).lastGroup == data) {
+        if (getChatActions(chat_id).lastGroup == data) {
             static const auto answerGroupRemoved { QObject::tr("Group has been removed").toStdString() };
             static const auto answerGroupNotRemoved { QObject::tr("Group has been not removed").toStdString() };
             const QString group = data;
             ret = managerDatabase->deleteAllNotes(group, chat_id);
-            updateCahtInfoLastGroup(chat_id, ret ? "" : group);
+            updateChatActionsLastGroup(chat_id, ret ? "" : group);
             answer = ret ? answerGroupRemoved : answerGroupNotRemoved;
         }
         else{

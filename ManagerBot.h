@@ -9,7 +9,7 @@
 #include "FileWorker.h"
 #include "GlobalData/GlobalData.h"
 #include "Content/Content.h"
-#include "Content/ChatInfo.h"
+#include "Content/ChatActions.h"
 #include "BotPlaces/PlaceStart/placestart.h"
 #include "BotPlaces/PlaceNotes/PlaceNotes.h"
 #include "BotPlaces/PlaceAdditional/PlaceAdditional.h"
@@ -31,11 +31,11 @@ private:
     void anyMessageWasWrite(const Message::Ptr message);
     void callbackQueryWasWrite(const CallbackQuery::Ptr callbackQuery);
 
-    ChatInfo getChatInfo(const std::int64_t chat_id, const std::string &currentText);
+    ChatActions getChatActions(const std::int64_t chat_id, const std::string &currentText);
     void changeObjPtrPlaceBot(const Content::Place place);
     QString getTokenFromFile();
 
-    void printChatInfo(const QString &header, const ChatInfo &chatInfo, const std::string &messageText);
+    void printChatActions(const QString &header, const ChatActions &chatActions, const std::string &messageText);
 
 private:
     ApplicationLogLib applicationLogLib;
@@ -44,6 +44,6 @@ private:
     PlaceNotes          *placeNotes     ;
     PlaceAdditional     *placeAdditional;
     PlaceAbstract       *placeBot       ;
-    std::shared_ptr<QMap<std::uint64_t, ChatInfo> > mapAllChats;
+    std::shared_ptr<QMap<std::uint64_t, ChatActions> > mapAllChats;
 };
 

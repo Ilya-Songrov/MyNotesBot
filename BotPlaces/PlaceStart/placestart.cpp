@@ -17,13 +17,13 @@ PlaceStart::PlaceStart(QObject *parent) : PlaceAbstract(parent)
 
 }
 
-void PlaceStart::slotOnCommand(const Message::Ptr &message, const ChatInfo &chatInfo)
+void PlaceStart::slotOnCommand(const Message::Ptr &message, const ChatActions &chatActions)
 {
-    if (chatInfo.currentCommand == Content::Start_ChooseLanguage) {
+    if (chatActions.currentCommand == Content::Start_ChooseLanguage) {
         onChooseLanguage(message);
     }
     else{
-        PlaceAbstract::slotOnCommand(message, chatInfo);
+        PlaceAbstract::slotOnCommand(message, chatActions);
     }
 }
 

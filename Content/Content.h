@@ -9,7 +9,7 @@ class Content : public QObject
 public:
     explicit Content(QObject *parent = nullptr);
     enum class ContentType{
-        Message,
+        Message     = 0,
         Command,
         UnknownCommand,
         NonCommandMessage,
@@ -17,15 +17,16 @@ public:
         ChosenInlineResult,
         CallbackQuery,
     };
-    enum class Place{
-        Start,
+    enum Place{
+        Start       = 0,
         Notes,
         Additional,
         MultiPlace,
     };
     Q_ENUM(Place)
     enum Command{
-        NoCommand,
+        // TODO: maybe delete NoCommand
+        NoCommand   = 0,
 
         Start_ChooseLanguage,
 

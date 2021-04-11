@@ -17,9 +17,9 @@ SOURCES += \
     BotPlaces/PlaceAdditional/PlaceAdditional.cpp \
     BotPlaces/PlaceNotes/PlaceNotes.cpp \
     BotPlaces/PlaceStart/placestart.cpp \
-    Content/ChatInfo.cpp \
     Content/Content.cpp \
-    Database/ManagerDatabase.cpp \
+    Database/DatabaseConnector.cpp \
+    Database/managerdatabase.cpp \
     GlobalData/GlobalData.cpp \
     ManagerBot.cpp \
     main.cpp \
@@ -34,9 +34,11 @@ HEADERS += \
     BotPlaces/PlaceAdditional/PlaceAdditional.h \
     BotPlaces/PlaceNotes/PlaceNotes.h \
     BotPlaces/PlaceStart/placestart.h \
-    Content/ChatInfo.h \
+    Content/ChatActions.h \
     Content/Content.h \
-    Database/ManagerDatabase.h \
+    Content/chatsettings.h \
+    Database/DatabaseConnector.h \
+    Database/managerdatabase.h \
     GlobalData/GlobalData.h \
     ManagerBot.h \
     tgbot/include/tgbot/tgbot.h
@@ -49,6 +51,7 @@ INCLUDEPATH += \
     Adjutants \
     Anomalies \
     Database \
+    Content \
 
 
 unix:!macx: LIBS += -L$$PWD/tgbot -lTgBot

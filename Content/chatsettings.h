@@ -12,15 +12,10 @@
 
 #pragma once
 
-#include "Content.h"
+#include <QObject>
+#include <QString>
+#include <QDate>
 
-class ChatInfo
-{
-public:
-    Content::Place      lastPlace       = Content::Place::MultiPlace;
-    Content::Command    lastCommand     = Content::Command::MultiPlace_AnyMessage;
-    Content::Place      currentPlace    = Content::Place::MultiPlace;
-    Content::Command    currentCommand  = Content::Command::MultiPlace_AnyMessage;
-    QString             lastGroup       ;
+struct ChatSettings{
+    QString language;
 };
-

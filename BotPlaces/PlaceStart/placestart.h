@@ -21,7 +21,7 @@ class PlaceStart : public PlaceAbstract
 public:
     explicit PlaceStart(QObject *parent = nullptr);
 
-    virtual void slotOnCommand(const Message::Ptr &message, const ChatInfo &chatInfo) override;
+    virtual void slotOnCommand(const Message::Ptr &message, const ChatActions &chatActions) override;
 
 private:
     void onChooseLanguage(const Message::Ptr &message);

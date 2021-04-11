@@ -2,12 +2,13 @@
 
 PlaceAdditional::PlaceAdditional(QObject *parent) : PlaceAbstract(parent)
 {
-
+    // TODO: new functiono - change_group_position
 }
 
-void PlaceAdditional::slotOnCommand(const Message::Ptr &message, const ChatInfo &chatInfo)
+void PlaceAdditional::slotOnCommand(const Message::Ptr &message, const ChatActions &chatActions)
 {
-    switch (chatInfo.currentCommand) {
+    // TODO: replace switch with if/else
+    switch (chatActions.currentCommand) {
     case Content::Additional_Additional:
         onAdditional(message);
         break;
@@ -15,13 +16,13 @@ void PlaceAdditional::slotOnCommand(const Message::Ptr &message, const ChatInfo 
         onAdditional(message);
         break;
     default:
-        PlaceAbstract::slotOnCommand(message, chatInfo);
+        PlaceAbstract::slotOnCommand(message, chatActions);
     }
 }
 
-void PlaceAdditional::slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatInfo &chatInfo)
+void PlaceAdditional::slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatActions &chatActions)
 {
-    switch (chatInfo.currentCommand) {
+    switch (chatActions.currentCommand) {
     case Content::Additional_ShowHistory:
         onShowHistory(callbackQuery);
         break;
@@ -35,7 +36,7 @@ void PlaceAdditional::slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuer
         onAnyCallbackQuery(callbackQuery);
         break;
     default:
-        PlaceAbstract::slotOnCallbackQuery(callbackQuery, chatInfo);
+        PlaceAbstract::slotOnCallbackQuery(callbackQuery, chatActions);
     }
 }
 

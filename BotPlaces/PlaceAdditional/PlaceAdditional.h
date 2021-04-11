@@ -9,8 +9,8 @@ class PlaceAdditional : public PlaceAbstract
 public:
     explicit PlaceAdditional(QObject *parent = nullptr);
 
-    virtual void slotOnCommand(const Message::Ptr &message, const ChatInfo &chatInfo) override;
-    virtual void slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatInfo &chatInfo) override;
+    virtual void slotOnCommand(const Message::Ptr &message, const ChatActions &chatActions) override;
+    virtual void slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatActions &chatActions) override;
 
 private:
     void onAdditional(const Message::Ptr &message);

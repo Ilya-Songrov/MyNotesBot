@@ -10,7 +10,10 @@
 #include <QFileInfo>
 #include <QVariant>
 
-class ManagerDatabase : public QObject
+#include "chatsettings.h"
+#include "ChatActions.h"
+
+class DatabaseConnector : public QObject
 {
     Q_OBJECT
 
@@ -21,8 +24,8 @@ public:
         QString note_id;
     };
 
-    explicit ManagerDatabase(const QString &pathDatabase, QObject *parent = nullptr);
-    ~ManagerDatabase();
+    explicit DatabaseConnector(const QString &pathDatabase, QObject *parent = nullptr);
+    virtual ~DatabaseConnector();
 
     bool isOpen() const;
 
@@ -40,24 +43,31 @@ public:
     bool deleteAllNotes(const int note_id, const std::int64_t chat_id);
     bool deleteAllNotes(const QString &group, const std::int64_t chat_id);
 
+    bool setChatActions(const std::int64_t chat_id, const ChatActions &chatActions);
+    ChatActions getChatActions(const std::int64_t chat_id);
+
+    std::shared_ptr<QMap<std::uint64_t, ChatSettings> > getAllChatSettings();
+    virtual ChatSettings getChatSettings(const std::int64_t chat_id);
+    virtual bool updateChatSettings(const std::int64_t chat_id, const ChatSettings &chatSettings);
+
     QStringList getListNotes(const std::string &group, const std::int64_t chat_id);
     QVector<OneNote> getVecNotes(const QString &group, const std::int64_t chat_id);
     QStringList getListGroups(const std::int64_t chat_id);
 
     void printDatabase() const;
 private:
-    bool inserNewChat(const std::int64_t chat_id);
-    bool deleteChat(const std::int64_t chat_id);
     bool deleteNotes(const std::int64_t chat_id);
-    bool existsChatId(const std::int64_t chat_id) const;
     bool existsNote(const QString &note, const QString &group, const std::int64_t chat_id) const;
     int replaceNullOrExistsNote(const QString &newNote, const QString &group, const std::int64_t chat_id);
 
     inline QVariant varinatChatId(const std::int64_t chat_id) const { return QVariant::fromValue(chat_id); }
 
+    void fillMapChatSettings(std::shared_ptr<QMap<uint64_t, ChatSettings> > mapChatSettings, const std::int64_t chat_id = -1);
+
     void createDatabase();
-    bool createTable_AllChats();
     bool createTable_Notes();
+    bool createTable_AllChatActions();
+    bool createTable_AllChatSettings();
 private:
     QSqlDatabase db;
 };

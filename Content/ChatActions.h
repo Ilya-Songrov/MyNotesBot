@@ -10,6 +10,17 @@
 **
 **************************************************************************/
 
-#include "ChatInfo.h"
+#pragma once
 
+#include "Content.h"
+
+class ChatActions
+{
+public:
+    Content::Place      currentPlace    = Content::Place::MultiPlace;
+    Content::Command    currentCommand  = Content::Command::MultiPlace_AnyMessage;
+    Content::Place      lastPlace       = Content::Place::MultiPlace;
+    Content::Command    lastCommand     = Content::Command::MultiPlace_AnyMessage;
+    QString             lastGroup       ;
+};
 

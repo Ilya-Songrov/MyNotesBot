@@ -3,7 +3,7 @@
 
 ManagerBot::ManagerBot(const QString token, QObject *parent) : QObject(parent)
   , appTranslator(":/translationFiles/NoteBot_UA.qm")
-  , mapAllChats(new QMap<std::uint64_t, ChatInfo>())
+  , mapAllChats(new QMap<std::uint64_t, ChatActions>())
 {
     Content::initContent();
     initGlobalData(token.isEmpty() ? getTokenFromFile() : token);
@@ -18,8 +18,6 @@ ManagerBot::ManagerBot(const QString token, QObject *parent) : QObject(parent)
 
 void ManagerBot::startBot()
 {
-    //    Content::initContent();
-
 //    signal(SIGINT, [](int s) {
 //        printf("SIGINT got\n");
 //        exit(0);
@@ -52,31 +50,31 @@ void ManagerBot::setSettings()
 
 void ManagerBot::anyMessageWasWrite(const Message::Ptr message)
 {
-    const auto chatInfo = getChatInfo(message->chat->id, message->text);
-    printChatInfo(QString(__FUNCTION__), chatInfo, message->text);
-    mapAllChats->insert(message->chat->id, chatInfo);
-    changeObjPtrPlaceBot(chatInfo.currentPlace);
-    placeBot->slotOnCommand(message, chatInfo);
+    const auto chatActions = getChatActions(message->chat->id, message->text);
+    printChatActions(QString(__FUNCTION__), chatActions, message->text);
+    mapAllChats->insert(message->chat->id, chatActions);
+    changeObjPtrPlaceBot(chatActions.currentPlace);
+    placeBot->slotOnCommand(message, chatActions);
 }
 
 void ManagerBot::callbackQueryWasWrite(const CallbackQuery::Ptr callbackQuery)
 {
-    const auto chatInfo = getChatInfo(callbackQuery->message->chat->id, callbackQuery->data);
-    printChatInfo(QString(__FUNCTION__), chatInfo, callbackQuery->message->text);
-    mapAllChats->insert(callbackQuery->message->chat->id, chatInfo);
-    changeObjPtrPlaceBot(chatInfo.currentPlace);
-    placeBot->slotOnCallbackQuery(callbackQuery, chatInfo);
+    const auto chatActions = getChatActions(callbackQuery->message->chat->id, callbackQuery->data);
+    printChatActions(QString(__FUNCTION__), chatActions, callbackQuery->message->text);
+    mapAllChats->insert(callbackQuery->message->chat->id, chatActions);
+    changeObjPtrPlaceBot(chatActions.currentPlace);
+    placeBot->slotOnCallbackQuery(callbackQuery, chatActions);
 }
 
-ChatInfo ManagerBot::getChatInfo(const int64_t chat_id, const std::string &currentText)
+ChatActions ManagerBot::getChatActions(const int64_t chat_id, const std::string &currentText)
 {
     const Content::PlaceCommand currentPlaceCommand = Content::getPlaceCommand(currentText);
-    ChatInfo chatInfo =     mapAllChats->value(chat_id);
-    chatInfo.lastPlace      = chatInfo.currentPlace;
-    chatInfo.lastCommand    = chatInfo.currentCommand;
-    chatInfo.currentPlace   = currentPlaceCommand.place;
-    chatInfo.currentCommand = currentPlaceCommand.command;
-    return chatInfo;
+    ChatActions chatActions =     mapAllChats->value(chat_id);
+    chatActions.lastPlace      = chatActions.currentPlace;
+    chatActions.lastCommand    = chatActions.currentCommand;
+    chatActions.currentPlace   = currentPlaceCommand.place;
+    chatActions.currentCommand = currentPlaceCommand.command;
+    return chatActions;
 }
 
 void ManagerBot::changeObjPtrPlaceBot(const Content::Place place)
@@ -102,7 +100,7 @@ QString ManagerBot::getTokenFromFile()
     return obj.value("token").toString();
 }
 
-void ManagerBot::printChatInfo(const QString &header, const ChatInfo &chatInfo, const std::string &messageText)
+void ManagerBot::printChatActions(const QString &header, const ChatActions &chatActions, const std::string &messageText)
 {
     static const QChar placeholder { '-' };
     static const int lenghtSymbols = 48;
@@ -110,11 +108,11 @@ void ManagerBot::printChatInfo(const QString &header, const ChatInfo &chatInfo, 
     const QString frameHeader = QString(header).leftJustified(justified, '-').rightJustified(lenghtSymbols, placeholder);
 
     qDebug() << frameHeader << Qt::endl;
-    qDebug() << "currentPlace   :" << chatInfo.currentPlace     ;
-    qDebug() << "currentCommand :" << chatInfo.currentCommand   ;
-    qDebug() << "lastPlace      :" << chatInfo.lastPlace        ;
-    qDebug() << "lastCommand    :" << chatInfo.lastCommand      ;
-    qDebug() << "lastGroup      :" << chatInfo.lastGroup        ;
+    qDebug() << "currentPlace   :" << chatActions.currentPlace     ;
+    qDebug() << "currentCommand :" << chatActions.currentCommand   ;
+    qDebug() << "lastPlace      :" << chatActions.lastPlace        ;
+    qDebug() << "lastCommand    :" << chatActions.lastCommand      ;
+    qDebug() << "lastGroup      :" << chatActions.lastGroup        ;
     qDebug() << "messageText    :" << messageText.c_str()       ;
     qDebug() << Qt::endl << frameHeader << Qt::endl;
 }

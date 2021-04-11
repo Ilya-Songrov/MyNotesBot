@@ -5,7 +5,7 @@
 #include <QtSql>
 
 #include "../Content/Content.h"
-#include "../Content/ChatInfo.h"
+#include "../Content/ChatActions.h"
 #include "../GlobalData/GlobalData.h"
 
 #include <tgbot/tgbot.h>
@@ -17,10 +17,10 @@ class PlaceAbstract : public QObject
 public:
     explicit PlaceAbstract(QObject *parent = nullptr);
 
-    static void initMapAllChats(std::shared_ptr<QMap<std::uint64_t, ChatInfo> > mapAllChatsPtr);
+    static void initMapAllChats(std::shared_ptr<QMap<std::uint64_t, ChatActions> > mapAllChatsPtr);
 
-    virtual void slotOnCommand(const Message::Ptr &message, const ChatInfo &chatInfo);
-    virtual void slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatInfo &chatInfo);
+    virtual void slotOnCommand(const Message::Ptr &message, const ChatActions &chatActions);
+    virtual void slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatActions &chatActions);
 
 protected:
     ReplyKeyboardMarkup::Ptr createOneColumnReplyKeyboardMarkup(const QStringList &listButtons, const bool resizeKeyboard = true, const bool oneTimeKeyboard = false);
@@ -35,15 +35,15 @@ protected:
     void sendMainMenuMessage(const std::int64_t chat_id, const std::string &message);
     void sendInlineKeyboardMarkupMessage(const std::int64_t chat_id, const std::string &message, const InlineKeyboardMarkup::Ptr inlineKeyboardMarkup);
 
-    inline void setChatInfo(const std::int64_t chat_id, const ChatInfo &chatInfo){ mapAllChats->insert(chat_id, chatInfo); }
-    inline ChatInfo getChatInfo(const std::int64_t chat_id){ return mapAllChats->value(chat_id); }
-    void updateCahtInfoLastGroup(const std::int64_t chat_id, const QString &lastGroup);
-    void updateCahtInfoCurrentCommand(const std::int64_t chat_id, const Content::Command currentCommand);
-    void updateCahtInfoCurrentCommandAndLastGroup(const std::int64_t chat_id, const Content::Command currentCommand, const QString &lastGroup);
+    inline void setChatActions(const std::int64_t chat_id, const ChatActions &chatActions){ mapAllChats->insert(chat_id, chatActions); }
+    inline ChatActions getChatActions(const std::int64_t chat_id){ return mapAllChats->value(chat_id); }
+    void updateChatActionsLastGroup(const std::int64_t chat_id, const QString &lastGroup);
+    void updateChatActionsCurrentCommand(const std::int64_t chat_id, const Content::Command currentCommand);
+    void updateChatActionsCurrentCommandAndLastGroup(const std::int64_t chat_id, const Content::Command currentCommand, const QString &lastGroup);
 
-    inline bool chatContainsLastCommand(const std::int64_t chat_id, const Content::Command command){ return getChatInfo(chat_id).lastCommand == command; }
+    inline bool chatContainsLastCommand(const std::int64_t chat_id, const Content::Command command){ return getChatActions(chat_id).lastCommand == command; }
 
 protected:
-    static std::shared_ptr<QMap<std::uint64_t, ChatInfo> > mapAllChats;
+    static std::shared_ptr<QMap<std::uint64_t, ChatActions> > mapAllChats;
 };
 

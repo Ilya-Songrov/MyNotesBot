@@ -1,20 +1,20 @@
 #include "PlaceAbstract.h"
 
-std::shared_ptr<QMap<std::uint64_t, ChatInfo> > PlaceAbstract::mapAllChats;
+std::shared_ptr<QMap<std::uint64_t, ChatActions> > PlaceAbstract::mapAllChats;
 
 PlaceAbstract::PlaceAbstract(QObject *parent) : QObject(parent)
 {
 
 }
 
-void PlaceAbstract::initMapAllChats(std::shared_ptr<QMap<uint64_t, ChatInfo> > mapAllChatsPtr)
+void PlaceAbstract::initMapAllChats(std::shared_ptr<QMap<uint64_t, ChatActions> > mapAllChatsPtr)
 {
     mapAllChats = mapAllChatsPtr;
 }
 
-void PlaceAbstract::slotOnCommand(const Message::Ptr &message, const ChatInfo &chatInfo)
+void PlaceAbstract::slotOnCommand(const Message::Ptr &message, const ChatActions &chatActions)
 {
-    switch (chatInfo.currentCommand) {
+    switch (chatActions.currentCommand) {
     case Content::MultiPlace_Start:
         sendMainMenuButtons(message->chat->id);
         break;
@@ -32,9 +32,9 @@ void PlaceAbstract::slotOnCommand(const Message::Ptr &message, const ChatInfo &c
     }
 }
 
-void PlaceAbstract::slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatInfo &chatInfo)
+void PlaceAbstract::slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatActions &chatActions)
 {
-    switch (chatInfo.currentCommand) {
+    switch (chatActions.currentCommand) {
     case Content::MultiPlace_Start:
         sendMainMenuButtons(callbackQuery->message->chat->id);
         break;
@@ -165,25 +165,25 @@ void PlaceAbstract::sendInlineKeyboardMarkupMessage(const int64_t chat_id, const
     bot->getApi().sendMessage(chat_id, message, false, 0, inlineKeyboardMarkup);
 }
 
-void PlaceAbstract::updateCahtInfoLastGroup(const int64_t chat_id, const QString &lastGroup)
+void PlaceAbstract::updateChatActionsLastGroup(const int64_t chat_id, const QString &lastGroup)
 {
-    auto chatInfo = getChatInfo(chat_id);
-    chatInfo.lastGroup = lastGroup;
-    setChatInfo(chat_id, chatInfo);
+    auto chatActions = getChatActions(chat_id);
+    chatActions.lastGroup = lastGroup;
+    setChatActions(chat_id, chatActions);
 }
 
-void PlaceAbstract::updateCahtInfoCurrentCommand(const int64_t chat_id, const Content::Command currentCommand)
+void PlaceAbstract::updateChatActionsCurrentCommand(const int64_t chat_id, const Content::Command currentCommand)
 {
-    auto chatInfo = getChatInfo(chat_id);
-    chatInfo.currentCommand = currentCommand;
-    setChatInfo(chat_id, chatInfo);
+    auto chatActions = getChatActions(chat_id);
+    chatActions.currentCommand = currentCommand;
+    setChatActions(chat_id, chatActions);
 }
 
-void PlaceAbstract::updateCahtInfoCurrentCommandAndLastGroup(const int64_t chat_id, const Content::Command currentCommand, const QString &lastGroup)
+void PlaceAbstract::updateChatActionsCurrentCommandAndLastGroup(const int64_t chat_id, const Content::Command currentCommand, const QString &lastGroup)
 {
-    auto chatInfo = getChatInfo(chat_id);
-    chatInfo.currentCommand = currentCommand;
-    chatInfo.lastGroup = lastGroup;
-    setChatInfo(chat_id, chatInfo);
+    auto chatActions = getChatActions(chat_id);
+    chatActions.currentCommand = currentCommand;
+    chatActions.lastGroup = lastGroup;
+    setChatActions(chat_id, chatActions);
 }
 
