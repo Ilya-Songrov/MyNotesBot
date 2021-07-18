@@ -1,14 +1,11 @@
-### 1
+### find tocken
 Open Telegram --> Search: BotFather --> /token
 
-### 2
+### telegram api
 https://core.telegram.org/bots/api
 
-### 3
-https://github.com/reo7sp/tgbot-cpp
-
+### tgbot dependencies (https://github.com/reo7sp/tgbot-cpp#dependencies)
 sudo apt-get update
-
 sudo apt-get install g++
 sudo apt-get install make
 sudo apt-get install binutils
@@ -19,7 +16,7 @@ sudo apt-get install zlib1g-dev
 sudo apt-get install curl
 sudo apt-get install libcurl4-openssl-dev
 
-### 4
+### tgbot installation (https://github.com/reo7sp/tgbot-cpp)
 mkdir tgbot
 cd tgbot
 git clone https://github.com/reo7sp/tgbot-cpp
@@ -27,8 +24,3 @@ cd tgbot-cpp
 cmake .
 make -j4
 ls | grep *.a
-
-### 5
-
- 
- 
