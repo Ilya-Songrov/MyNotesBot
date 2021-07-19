@@ -82,12 +82,10 @@ HEADERS += \
     ApplicationLogLib/ApplicationLogLib.h \
     ApplicationLogLib/ApplicationLogLib_global.h \
 
-unix:!macx: LIBS += -L$$PWD/ApplicationLogLib/ -lApplicationLogLib
-INCLUDEPATH += $$PWD/ApplicationLogLib
-DEPENDPATH  += $$PWD/ApplicationLogLib
-unix:!macx: PRE_TARGETDEPS += $$PWD/ApplicationLogLib/libApplicationLogLib.so
-#QMAKE_LFLAGS += -Wl,-rpath,"'\$$ORIGIN'"   # OR
-QMAKE_RPATHDIR += ":'\$$ORIGIN'"            # OR
+unix:!macx: LIBS += -L$$PWD/tgbot -lTgBot
+INCLUDEPATH += $$PWD/tgbot
+DEPENDPATH  += $$PWD/tgbot
+unix:!macx: PRE_TARGETDEPS += $$PWD/tgbot/libTgBot.a
 ### ApplicationLogLib ###
 
 
