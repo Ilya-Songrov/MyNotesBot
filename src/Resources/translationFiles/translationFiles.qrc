@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/translationFiles">
-        <file>NoteBot_UA.qm</file>
+        <file>NotesBot_UA.qm</file>
     </qresource>
 </RCC>

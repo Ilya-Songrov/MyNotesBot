@@ -21,19 +21,21 @@ if [ -z "$1" ]; then
 fi
 
 pathToQmake=$1
+path_builds_submodules=$relpath/builds_submodules
+mkdir -p $path_builds_submodules
 
 git submodule update --init --recursive
 
 # build tgbot-cpp
-pathBuildTgbot=$relpath/builds_submodules/tgbot
-mkdir -p $pathBuildTgbot
+pathBuildTgbot=$path_builds_submodules/tgbot
+mkdir $pathBuildTgbot
 cd $pathBuildTgbot
-cmake .
+cmake $relpath/tgbot-cpp
 make
 
 # build LogSaver
-pathBuildLogSaver=$relpath/builds_submodules/LogSaver
-mkdir -p $pathBuildLogSaver
+pathBuildLogSaver=$path_builds_submodules/LogSaver
+mkdir $pathBuildLogSaver
 cd $pathBuildLogSaver
-$pathToQmake ../
+$pathToQmake $relpath/LogSaver
 make

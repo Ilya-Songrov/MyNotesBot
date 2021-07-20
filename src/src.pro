@@ -28,7 +28,7 @@ HEADERS += \
     ../Exceptions/exceptions/applicationnotify.h \
     ../Exceptions/exceptions/exceptionerror.h \
     ../Exceptions/exceptions/unixsignalnotifier.h \
-    ../LogSaver/build/LogSaver/logsaver.h \
+    ../builds_submodules/LogSaver/LogSaver/logsaver.h \
     Adjutants/AppTranslator.h \
     Adjutants/FileWorker.h \
     BotPlaces/PlaceAbstract.h \
@@ -48,9 +48,9 @@ FORMS += \
     mainwindow.ui
 
 INCLUDEPATH += \
-    ../tgbot-cpp/include \
     ../Exceptions/exceptions \
-    ../LogSaver/build/LogSaver \
+    ../tgbot-cpp/include \
+    ../builds_submodules/LogSaver/LogSaver \
     Adjutants \
     Database \
     Content \
@@ -66,13 +66,13 @@ RESOURCES += \
 
 TRANSLATIONS += \
     Resources/translationFiles/NotesBot_UA.ts \
-
+LogSaver
 
 ### tgbot ###
-unix:!macx: LIBS += -L$$PWD/../tgbot-cpp -lTgBot
-INCLUDEPATH += $$PWD/../tgbot-cpp
-DEPENDPATH  += $$PWD/../tgbot-cpp
-unix:!macx: PRE_TARGETDEPS += $$PWD/../tgbot-cpp/libTgBot.a
+unix:!macx: LIBS += -L$$PWD/../builds_submodules/tgbot -lTgBot
+INCLUDEPATH += $$PWD/../builds_submodules/tgbot
+DEPENDPATH  += $$PWD/../builds_submodules/tgbot
+unix:!macx: PRE_TARGETDEPS += $$PWD/../builds_submodules/tgbot/libTgBot.a
 
 #-lTgBot -lboost_system -lssl -lcrypto -lpthread
 unix:!macx: LIBS += -lboost_system
@@ -82,10 +82,10 @@ unix:!macx: LIBS += -lpthread
 ### tgbot ###
 
 ### LogSaver ###
-unix:!macx: LIBS += -L$$PWD/../LogSaver/build/LogSaver -lLogSaver
-INCLUDEPATH += $$PWD/../LogSaver/build/LogSaver
-DEPENDPATH  += $$PWD/../LogSaver/build/LogSaver
-unix:!macx: PRE_TARGETDEPS += $$PWD/../LogSaver/build/LogSaver/libLogSaver.a
+unix:!macx: LIBS += -L$$PWD/../builds_submodules/LogSaver/LogSaver -lLogSaver
+INCLUDEPATH += $$PWD/../builds_submodules/LogSaver/LogSaver
+DEPENDPATH  += $$PWD/../builds_submodules/LogSaver/LogSaver
+unix:!macx: PRE_TARGETDEPS += $$PWD/../builds_submodules/LogSaver/LogSaver/libLogSaver.a
 ### LogSaver ###
 
 
