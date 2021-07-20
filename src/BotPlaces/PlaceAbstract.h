@@ -5,7 +5,7 @@
 #include <QtSql>
 
 #include "../Content/Content.h"
-#include "../Content/ChatActions.h"
+#include "../Content/chatactions.h"
 #include "../GlobalData/GlobalData.h"
 
 #include <tgbot/tgbot.h>

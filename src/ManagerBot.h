@@ -9,7 +9,7 @@
 #include "FileWorker.h"
 #include "GlobalData/GlobalData.h"
 #include "Content/Content.h"
-#include "Content/ChatActions.h"
+#include "Content/chatactions.h"
 #include "BotPlaces/PlaceStart/placestart.h"
 #include "BotPlaces/PlaceNotes/PlaceNotes.h"
 #include "BotPlaces/PlaceAdditional/PlaceAdditional.h"

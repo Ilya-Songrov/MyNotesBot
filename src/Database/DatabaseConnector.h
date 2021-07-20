@@ -48,10 +48,8 @@ public:
 
 protected:
     Chat getChat(const std::int64_t chat_id);
-    QVector<Note> getVecGroups(const std::int64_t chat_id);
+    QVector<Group> getVecGroups(const std::int64_t chat_id);
     QVector<Note> getVecNotes(const QString &group, const std::int64_t chat_id);
-    QStringList getListNotes(const std::string &group, const std::int64_t chat_id);
-    QStringList getListGroups(const std::int64_t chat_id);
 
 private:
     bool deleteNotes(const std::int64_t chat_id);

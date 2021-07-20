@@ -18,4 +18,5 @@
 
 struct ChatSettings{
     QString language;
+    int language;
 };

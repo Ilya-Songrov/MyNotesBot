@@ -27,6 +27,16 @@ ManagerDatabase::~ManagerDatabase()
     qDebug() << "function:" << __FUNCTION__ << Qt::endl;
 }
 
+QStringList ManagerDatabase::getListNotes(const std::string &group, const int64_t chat_id)
+{
+    QStringList list;
+    const auto vecNotess = getVecNotes(QString::fromStdString(group), chat_id);
+    for (const auto &note: vecNotess) {
+        list.append(note.note);
+    }
+    return list;
+}
+
 ChatSettings ManagerDatabase::getChatSettings(const int64_t chat_id)
 {
     if (sq == LoadAllSettingsInMemory) {

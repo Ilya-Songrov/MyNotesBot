@@ -27,6 +27,8 @@ public:
     explicit ManagerDatabase(const QString &pathDatabase, const SettingsQuery settingsQuery = LoadAllSettingsInMemory, QObject *parent = nullptr);
     virtual ~ManagerDatabase();
 
+    QStringList getListNotes(const std::string &group, const std::int64_t chat_id);
+
     virtual ChatSettings getChatSettings(const std::int64_t chat_id);
     virtual bool updateChatSettings(const std::int64_t chat_id, const ChatSettings &chatSettings);
 
