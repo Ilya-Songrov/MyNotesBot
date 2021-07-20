@@ -36,8 +36,9 @@ HEADERS += \
     BotPlaces/PlaceAdditional/PlaceAdditional.h \
     BotPlaces/PlaceNotes/PlaceNotes.h \
     BotPlaces/PlaceStart/placestart.h \
-    Content/ChatActions.h \
     Content/Content.h \
+    Content/chat.h \
+    Content/chatactions.h \
     Content/chatsettings.h \
     Database/DatabaseConnector.h \
     Database/managerdatabase.h \

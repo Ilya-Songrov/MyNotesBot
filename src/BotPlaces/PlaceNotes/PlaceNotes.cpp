@@ -36,7 +36,7 @@ void PlaceNotes::slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, co
 
 void PlaceNotes::onAddNote(const Message::Ptr &message)
 {
-    static const auto answer { QObject::tr("Select group:").toStdString() };
+    static const auto answer { QObject::tr("Select/Create group:").toStdString() };
     static const auto createGroup = Content::getCommandStr(Content::Notes_CreateGroup);
     auto list = managerDatabase->getListGroups(message->chat->id);
     list.append(createGroup);

@@ -95,7 +95,11 @@ void ManagerBot::changeObjPtrPlaceBot(const Content::Place place)
 
 QString ManagerBot::getTokenFromFile()
 {
+#ifdef QT_DEBUG
+    const QJsonDocument doc = FileWorker::readFileJson("../../config.json");
+#else
     const QJsonDocument doc = FileWorker::readFileJson("../config.json");
+#endif
     const QJsonObject obj = doc.object();
     return obj.value("token").toString();
 }

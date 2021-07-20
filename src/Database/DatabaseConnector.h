@@ -11,19 +11,14 @@
 #include <QVariant>
 
 #include "chatsettings.h"
-#include "ChatActions.h"
+#include "chat.h"
+#include "chatactions.h"
 
 class DatabaseConnector : public QObject
 {
     Q_OBJECT
 
 public:
-    struct OneNote{
-        QString note;
-        QString group;
-        QString note_id;
-    };
-
     explicit DatabaseConnector(const QString &pathDatabase, QObject *parent = nullptr);
     virtual ~DatabaseConnector();
 
@@ -40,7 +35,6 @@ public:
     bool existsGroup(const QString &group, const std::int64_t chat_id);
     bool existsGroup(const std::string &group, const std::int64_t chat_id);
 
-    bool deleteAllNotes(const int note_id, const std::int64_t chat_id);
     bool deleteAllNotes(const QString &group, const std::int64_t chat_id);
 
     bool setChatActions(const std::int64_t chat_id, const ChatActions &chatActions);
@@ -50,11 +44,15 @@ public:
     virtual ChatSettings getChatSettings(const std::int64_t chat_id);
     virtual bool updateChatSettings(const std::int64_t chat_id, const ChatSettings &chatSettings);
 
+    void printDatabase(const int num) const;
+
+protected:
+    Chat getChat(const std::int64_t chat_id);
+    QVector<Note> getVecGroups(const std::int64_t chat_id);
+    QVector<Note> getVecNotes(const QString &group, const std::int64_t chat_id);
     QStringList getListNotes(const std::string &group, const std::int64_t chat_id);
-    QVector<OneNote> getVecNotes(const QString &group, const std::int64_t chat_id);
     QStringList getListGroups(const std::int64_t chat_id);
 
-    void printDatabase() const;
 private:
     bool deleteNotes(const std::int64_t chat_id);
     bool existsNote(const QString &note, const QString &group, const std::int64_t chat_id) const;

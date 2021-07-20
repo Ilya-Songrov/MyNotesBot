@@ -16,6 +16,7 @@ ManagerDatabase::ManagerDatabase(const QString &pathDatabase, const SettingsQuer
     : DatabaseConnector(pathDatabase, parent)
     , sq(settingsQuery)
 {
+    // TODO: "◾️ " + note
     if (sq == LoadAllSettingsInMemory) {
         loadAllSettings();
     }
