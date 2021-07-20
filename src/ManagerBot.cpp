@@ -2,7 +2,7 @@
 
 
 ManagerBot::ManagerBot(const QString token, QObject *parent) : QObject(parent)
-  , appTranslator(":/translationFiles/NoteBot_UA.qm")
+  , appTranslator(":/translationFiles/NotesBot_UA.qm")
   , mapAllChats(new QMap<std::uint64_t, ChatActions>())
 {
     Content::initContent();

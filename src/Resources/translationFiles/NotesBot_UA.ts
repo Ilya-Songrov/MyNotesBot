@@ -24,68 +24,68 @@ May God bless you.</source>
 Нехай Бог благословить тебе.</translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceAdditional/PlaceAdditional.cpp" line="48"/>
+        <location filename="../../BotPlaces/PlaceAdditional/PlaceAdditional.cpp" line="49"/>
         <source>Select function:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceAdditional/PlaceAdditional.cpp" line="81"/>
+        <location filename="../../BotPlaces/PlaceAdditional/PlaceAdditional.cpp" line="82"/>
         <source>Hello! I&apos;m Ilya. Write me if you have any questions (https://t.me/ilyaSongrov)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="40"/>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="51"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="39"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="50"/>
         <source>Select group:</source>
         <translation>Вибери групу:</translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="61"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="60"/>
         <source>New group was created</source>
         <translation>Нова група була створена</translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="62"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="61"/>
         <source>New group was not created</source>
         <translation>Нова група не була створена</translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="96"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="95"/>
         <source>Write name of group:</source>
         <translation>Напишіть назву групи:</translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="107"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="106"/>
         <source>Write your note:</source>
         <translation>Напишіть свою нотатку:</translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="114"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="113"/>
         <source>Select the note:</source>
         <translation>Виберіть нотатку:</translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="130"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="129"/>
         <source>Group has been removed</source>
         <translation>Група була видалена</translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="131"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="130"/>
         <source>Group has been not removed</source>
         <translation>Група не була видалена</translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="138"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="137"/>
         <source>Note has been removed</source>
         <translation>Нотатка була видалена</translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="139"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="138"/>
         <source>Note has been not removed</source>
         <translation>Нотатка не була видалена</translation>
     </message>
     <message>
-        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="159"/>
+        <location filename="../../BotPlaces/PlaceNotes/PlaceNotes.cpp" line="158"/>
         <source>List notes</source>
         <translation>Список нотаток</translation>
     </message>

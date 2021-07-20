@@ -4,7 +4,7 @@
 #include <QString>
 #include <QVariant>
 
-#include "ApplicationLogLib/ApplicationLogLib.h"
+#include "logsaver.h"
 #include "Adjutants/AppTranslator.h"
 #include "FileWorker.h"
 #include "GlobalData/GlobalData.h"
@@ -38,7 +38,7 @@ private:
     void printChatActions(const QString &header, const ChatActions &chatActions, const std::string &messageText);
 
 private:
-    ApplicationLogLib applicationLogLib;
+    LogSaver logSaver;
     AppTranslator appTranslator;
     PlaceStart          *placeStart     ;
     PlaceNotes          *placeNotes     ;

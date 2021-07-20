@@ -1,6 +1,6 @@
 #include <QCoreApplication>
 
-#include "ApplicationNotify.h"
+#include "applicationnotify.h"
 #include "ManagerBot.h"
 
 #define VERSION_MAJOR    "0"
@@ -23,10 +23,11 @@ int main(int argc, char *argv[])
 
         ManagerBot managerBot;
         managerBot.startBot();
+
         return app.exec();
     }
-    catch (ExceptionHandler &exceptionHandler) {
-        std::cerr << qPrintable(exceptionHandler.message()) << std::endl;
+    catch (ExceptionError &exceptionError) {
+        std::cerr << qPrintable(exceptionError.message()) << std::endl;
     }
     catch (std::exception &exception) {
         std::cerr << exception.what() << std::endl;

@@ -9,10 +9,10 @@ CONFIG -= app_bundle
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ../Exceptions/exceptions/exceptionerror.cpp \
+    ../Exceptions/exceptions/unixsignalnotifier.cpp \
     Adjutants/AppTranslator.cpp \
     Adjutants/FileWorker.cpp \
-    Anomalies/Errors.cpp \
-    Anomalies/ExceptionHandler.cpp \
     BotPlaces/PlaceAbstract.cpp \
     BotPlaces/PlaceAdditional/PlaceAdditional.cpp \
     BotPlaces/PlaceNotes/PlaceNotes.cpp \
@@ -25,11 +25,12 @@ SOURCES += \
     main.cpp \
 
 HEADERS += \
+    ../Exceptions/exceptions/applicationnotify.h \
+    ../Exceptions/exceptions/exceptionerror.h \
+    ../Exceptions/exceptions/unixsignalnotifier.h \
+    ../LogSaver/build/LogSaver/logsaver.h \
     Adjutants/AppTranslator.h \
     Adjutants/FileWorker.h \
-    Anomalies/ApplicationNotify.h \
-    Anomalies/Errors.h \
-    Anomalies/ExceptionHandler.h \
     BotPlaces/PlaceAbstract.h \
     BotPlaces/PlaceAdditional/PlaceAdditional.h \
     BotPlaces/PlaceNotes/PlaceNotes.h \
@@ -47,23 +48,13 @@ FORMS += \
     mainwindow.ui
 
 INCLUDEPATH += \
-    tgbot/include \
+    ../tgbot-cpp/include \
+    ../Exceptions/exceptions \
+    ../LogSaver/build/LogSaver \
     Adjutants \
-    Anomalies \
     Database \
     Content \
 
-
-unix:!macx: LIBS += -L$$PWD/tgbot -lTgBot
-INCLUDEPATH += $$PWD/tgbot
-DEPENDPATH  += $$PWD/tgbot
-unix:!macx: PRE_TARGETDEPS += $$PWD/tgbot/libTgBot.a
-
-#-lTgBot -lboost_system -lssl -lcrypto -lpthread
-unix:!macx: LIBS += -lboost_system
-unix:!macx: LIBS += -lssl
-unix:!macx: LIBS += -lcrypto
-unix:!macx: LIBS += -lpthread
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -74,19 +65,28 @@ RESOURCES += \
     Resources/translationFiles/translationFiles.qrc
 
 TRANSLATIONS += \
-    Resources/translationFiles/NoteBot_UA.ts \
+    Resources/translationFiles/NotesBot_UA.ts \
 
 
-### ApplicationLogLib ###
-HEADERS += \
-    ApplicationLogLib/ApplicationLogLib.h \
-    ApplicationLogLib/ApplicationLogLib_global.h \
+### tgbot ###
+unix:!macx: LIBS += -L$$PWD/../tgbot-cpp -lTgBot
+INCLUDEPATH += $$PWD/../tgbot-cpp
+DEPENDPATH  += $$PWD/../tgbot-cpp
+unix:!macx: PRE_TARGETDEPS += $$PWD/../tgbot-cpp/libTgBot.a
 
-unix:!macx: LIBS += -L$$PWD/tgbot -lTgBot
-INCLUDEPATH += $$PWD/tgbot
-DEPENDPATH  += $$PWD/tgbot
-unix:!macx: PRE_TARGETDEPS += $$PWD/tgbot/libTgBot.a
-### ApplicationLogLib ###
+#-lTgBot -lboost_system -lssl -lcrypto -lpthread
+unix:!macx: LIBS += -lboost_system
+unix:!macx: LIBS += -lssl
+unix:!macx: LIBS += -lcrypto
+unix:!macx: LIBS += -lpthread
+### tgbot ###
+
+### LogSaver ###
+unix:!macx: LIBS += -L$$PWD/../LogSaver/build/LogSaver -lLogSaver
+INCLUDEPATH += $$PWD/../LogSaver/build/LogSaver
+DEPENDPATH  += $$PWD/../LogSaver/build/LogSaver
+unix:!macx: PRE_TARGETDEPS += $$PWD/../LogSaver/build/LogSaver/libLogSaver.a
+### LogSaver ###
 
 
 ### cqtdeployer ###

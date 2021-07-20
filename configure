@@ -1,0 +1,39 @@
+#!/bin/sh
+
+
+#-------------------------------------------------------------------------------
+# script initialization
+#-------------------------------------------------------------------------------
+
+# the directory of this script is the "source tree"
+relpath=`dirname $0`
+relpath=`(cd "$relpath"; /bin/pwd)`
+
+if [ "$1" == "-h" ]; then
+	echo -e "Usage: bash $0 <path_to_qmake> \
+	\n\n# Arguments description"
+	exit 0
+fi
+
+if [ -z "$1" ]; then
+     echo -e "\nError! Please enter all arguments (run flag: -h)\n"
+     exit 1
+fi
+
+pathToQmake=$1
+
+git submodule update --init --recursive
+
+# build tgbot-cpp
+pathBuildTgbot=$relpath/builds_submodules/tgbot
+mkdir -p $pathBuildTgbot
+cd $pathBuildTgbot
+cmake .
+make
+
+# build LogSaver
+pathBuildLogSaver=$relpath/builds_submodules/LogSaver
+mkdir -p $pathBuildLogSaver
+cd $pathBuildLogSaver
+$pathToQmake ../
+make

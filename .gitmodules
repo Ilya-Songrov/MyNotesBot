@@ -4,3 +4,7 @@
 [submodule "tgbot-cpp"]
 	path = tgbot-cpp
 	url = https://github.com/reo7sp/tgbot-cpp
+[submodule "Exceptions"]
+	path = Exceptions
+	url = https://github.com/Ilya-Songrov/Exceptions
+	branch = main
