@@ -3,6 +3,7 @@ QT      += sql
 
 CONFIG += c++14 console
 CONFIG -= app_bundle
+TARGET = NotesBot
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
