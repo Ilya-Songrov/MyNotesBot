@@ -1,15 +1,8 @@
 #include "PlaceAbstract.h"
 
-std::shared_ptr<QMap<std::uint64_t, ChatActions> > PlaceAbstract::mapAllChats;
-
 PlaceAbstract::PlaceAbstract(QObject *parent) : QObject(parent)
 {
 
-}
-
-void PlaceAbstract::initMapAllChats(std::shared_ptr<QMap<uint64_t, ChatActions> > mapAllChatsPtr)
-{
-    mapAllChats = mapAllChatsPtr;
 }
 
 void PlaceAbstract::slotOnCommand(const Message::Ptr &message, const ChatActions &chatActions)

@@ -3,11 +3,9 @@
 
 ManagerBot::ManagerBot(const QString token, QObject *parent) : QObject(parent)
   , appTranslator(":/translationFiles/NotesBot_UA.qm")
-  , mapAllChats(new QMap<std::uint64_t, ChatActions>())
 {
     Content::initContent();
     initGlobalData(token.isEmpty() ? getTokenFromFile() : token);
-    PlaceAbstract::initMapAllChats(mapAllChats);
 
     placeStart          = new PlaceStart    (this);
     placeNotes          = new PlaceNotes    (this);
@@ -52,7 +50,7 @@ void ManagerBot::anyMessageWasWrite(const Message::Ptr message)
 {
     const auto chatActions = getChatActions(message->chat->id, message->text);
     printChatActions(QString(__FUNCTION__), chatActions, message->text);
-    mapAllChats->insert(message->chat->id, chatActions);
+    managerDb->setChatActions(message->chat->id, chatActions);
     changeObjPtrPlaceBot(chatActions.currentPlace);
     placeBot->slotOnCommand(message, chatActions);
 }
@@ -61,7 +59,7 @@ void ManagerBot::callbackQueryWasWrite(const CallbackQuery::Ptr callbackQuery)
 {
     const auto chatActions = getChatActions(callbackQuery->message->chat->id, callbackQuery->data);
     printChatActions(QString(__FUNCTION__), chatActions, callbackQuery->message->text);
-    mapAllChats->insert(callbackQuery->message->chat->id, chatActions);
+    managerDb->setChatActions(callbackQuery->message->chat->id, chatActions);
     changeObjPtrPlaceBot(chatActions.currentPlace);
     placeBot->slotOnCallbackQuery(callbackQuery, chatActions);
 }
@@ -69,11 +67,11 @@ void ManagerBot::callbackQueryWasWrite(const CallbackQuery::Ptr callbackQuery)
 ChatActions ManagerBot::getChatActions(const int64_t chat_id, const std::string &currentText)
 {
     const Content::PlaceCommand currentPlaceCommand = Content::getPlaceCommand(currentText);
-    ChatActions chatActions =     mapAllChats->value(chat_id);
-    chatActions.lastPlace      = chatActions.currentPlace;
-    chatActions.lastCommand    = chatActions.currentCommand;
-    chatActions.currentPlace   = currentPlaceCommand.place;
-    chatActions.currentCommand = currentPlaceCommand.command;
+    ChatActions chatActions     = managerDb->getChatActions(chat_id);
+    chatActions.lastPlace       = chatActions.currentPlace;
+    chatActions.lastCommand     = chatActions.currentCommand;
+    chatActions.currentPlace    = currentPlaceCommand.place;
+    chatActions.currentCommand  = currentPlaceCommand.command;
     return chatActions;
 }
 

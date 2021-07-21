@@ -39,11 +39,10 @@ private:
 
 private:
     LogSaver logSaver;
-    AppTranslator appTranslator;
+    AppTranslator appTranslator; // TODO: rewrite this
     PlaceStart          *placeStart     ;
     PlaceNotes          *placeNotes     ;
     PlaceAdditional     *placeAdditional;
     PlaceAbstract       *placeBot       ;
-    std::shared_ptr<QMap<std::uint64_t, ChatActions> > mapAllChats;
 };
 

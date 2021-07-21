@@ -17,8 +17,6 @@ class PlaceAbstract : public QObject
 public:
     explicit PlaceAbstract(QObject *parent = nullptr);
 
-    static void initMapAllChats(std::shared_ptr<QMap<std::uint64_t, ChatActions> > mapAllChatsPtr);
-
     virtual void slotOnCommand(const Message::Ptr &message, const ChatActions &chatActions);
     virtual void slotOnCallbackQuery(const CallbackQuery::Ptr &callbackQuery, const ChatActions &chatActions);
 
@@ -35,15 +33,12 @@ protected:
     void sendMainMenuMessage(const std::int64_t chat_id, const std::string &message);
     void sendInlineKeyboardMarkupMessage(const std::int64_t chat_id, const std::string &message, const InlineKeyboardMarkup::Ptr inlineKeyboardMarkup);
 
-    inline void setChatActions(const std::int64_t chat_id, const ChatActions &chatActions){ mapAllChats->insert(chat_id, chatActions); }
-    inline ChatActions getChatActions(const std::int64_t chat_id){ return mapAllChats->value(chat_id); }
+    inline void setChatActions(const std::int64_t chat_id, const ChatActions &chatActions){ managerDb->setChatActions(chat_id, chatActions); }
+    inline ChatActions getChatActions(const std::int64_t chat_id){ return managerDb->getChatActions(chat_id); }
     void updateChatActionsLastGroup(const std::int64_t chat_id, const QString &lastGroup);
     void updateChatActionsCurrentCommand(const std::int64_t chat_id, const Content::Command currentCommand);
     void updateChatActionsCurrentCommandAndLastGroup(const std::int64_t chat_id, const Content::Command currentCommand, const QString &lastGroup);
 
     inline bool chatContainsLastCommand(const std::int64_t chat_id, const Content::Command command){ return getChatActions(chat_id).lastCommand == command; }
-
-protected:
-    static std::shared_ptr<QMap<std::uint64_t, ChatActions> > mapAllChats;
 };
 

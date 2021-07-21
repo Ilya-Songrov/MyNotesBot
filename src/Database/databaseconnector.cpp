@@ -107,6 +107,7 @@ bool DatabaseConnector::existsGroup(const std::string &group_name, const int64_t
 
 bool DatabaseConnector::setChatActions(const int64_t chat_id, const ChatActions &chatActions)
 {
+    qDebug() << "function:" << __FUNCTION__ << Qt::endl;
     QSqlQuery query;
     query.prepare("INSERT INTO user_chat_actions (chat_id, currentPlace, currentCommand, lastPlace, lastCommand, lastGroup) "
                     "VALUES (:chat_id, :currentPlace, :currentCommand, :lastPlace, :lastCommand, :lastGroup)");
@@ -441,7 +442,7 @@ bool DatabaseConnector::createTable_UserChatActions()
             "currentCommand INTEGER DEFAULT 0,"
             "lastPlace INTEGER DEFAULT 0,"
             "lastCommand INTEGER DEFAULT 0,"
-            "lastGroup TEXT NOT NULL,"
+            "lastGroup TEXT,"
             "PRIMARY KEY (chat_id),"
             "UNIQUE (chat_id)"
             ");");
