@@ -8,7 +8,7 @@
 #include "Adjutants/AppTranslator.h"
 #include "FileWorker.h"
 #include "GlobalData/GlobalData.h"
-#include "Content/Content.h"
+#include "Content/content.h"
 #include "Content/chatactions.h"
 #include "BotPlaces/PlaceStart/placestart.h"
 #include "BotPlaces/PlaceNotes/PlaceNotes.h"

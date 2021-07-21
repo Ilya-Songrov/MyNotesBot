@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "Content.h"
+#include "content.h"
 
 class ChatActions
 {

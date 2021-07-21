@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <QtSql>
 
-#include "../Content/Content.h"
+#include "../Content/content.h"
 #include "../Content/chatactions.h"
 #include "../GlobalData/GlobalData.h"
 

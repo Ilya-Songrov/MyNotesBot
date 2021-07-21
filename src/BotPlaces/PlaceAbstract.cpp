@@ -131,19 +131,7 @@ InlineKeyboardMarkup::Ptr PlaceAbstract::createInlineKeyboardMarkup(const QVecto
 ReplyKeyboardMarkup::Ptr PlaceAbstract::getMainMenuButtons(const int64_t chat_id)
 {
     static const QStringList buttonsAddRemove = { Content::getCommandStr(Content::Notes_AddNote), Content::getCommandStr(Content::Notes_RemoveNote) };
-    const auto listGroups = managerDatabase->getListGroups(chat_id);
-    QVector<QStringList> vecLayouts;
-    QStringList listTemp;
-    for (int var = listGroups.size() - 1; var >= 0; --var) {
-        if ((var + 1) % 4 == 0 && !listTemp.isEmpty()) {
-            vecLayouts.append(listTemp);
-            listTemp.clear();
-        }
-        listTemp.insert(0, listGroups.at(var));
-    }
-    if (!listTemp.isEmpty()) {
-        vecLayouts.push_back(listTemp);
-    }
+    QVector<QStringList> vecLayouts = managerDb->getLayoutsGroups(chat_id);
     vecLayouts.append(buttonsAddRemove);
     const auto kb = createReplyKeyboardMarkup(vecLayouts, true, false);
     return kb;

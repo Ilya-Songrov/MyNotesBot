@@ -17,6 +17,6 @@
 #include <QDate>
 
 struct ChatSettings{
-    QString language;
-    int language;
+    QString language    = "en";
+    int quantityGroupsX = 4;
 };

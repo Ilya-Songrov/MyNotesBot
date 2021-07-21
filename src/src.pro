@@ -18,9 +18,9 @@ SOURCES += \
     BotPlaces/PlaceAdditional/PlaceAdditional.cpp \
     BotPlaces/PlaceNotes/PlaceNotes.cpp \
     BotPlaces/PlaceStart/placestart.cpp \
-    Content/Content.cpp \
-    Database/DatabaseConnector.cpp \
-    Database/managerdatabase.cpp \
+    Content/content.cpp \
+    Database/databaseconnector.cpp \
+    Database/managerdb.cpp \
     GlobalData/GlobalData.cpp \
     ManagerBot.cpp \
     main.cpp \
@@ -36,12 +36,12 @@ HEADERS += \
     BotPlaces/PlaceAdditional/PlaceAdditional.h \
     BotPlaces/PlaceNotes/PlaceNotes.h \
     BotPlaces/PlaceStart/placestart.h \
-    Content/Content.h \
     Content/chat.h \
     Content/chatactions.h \
     Content/chatsettings.h \
-    Database/DatabaseConnector.h \
-    Database/managerdatabase.h \
+    Content/content.h \
+    Database/databaseconnector.h \
+    Database/managerdb.h \
     GlobalData/GlobalData.h \
     ManagerBot.h \
     tgbot/include/tgbot/tgbot.h

@@ -1,4 +1,4 @@
-#include "Content.h"
+#include "content.h"
 
 #include <QMetaEnum>
 #include <QPair>
