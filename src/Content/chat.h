@@ -24,9 +24,13 @@ struct Group{
 };
 
 struct Chat{
-    QString chat_id;
-    ChatSettings chatSettings;
+    std::int64_t chat_id;
     ChatActions chatActions;
+    ChatSettings chatSettings;
     QVector<Group> vecGroups;
 };
 
+QDebug operator<< (QDebug dbg, const Note &note);
+QDebug operator<< (QDebug dbg, const GroupPosition &groupPosition);
+QDebug operator<< (QDebug dbg, const Group &group);
+QDebug operator<< (QDebug dbg, const Chat &chat);

@@ -18,6 +18,9 @@ SOURCES += \
     BotPlaces/PlaceAdditional/PlaceAdditional.cpp \
     BotPlaces/PlaceNotes/PlaceNotes.cpp \
     BotPlaces/PlaceStart/placestart.cpp \
+    Content/chat.cpp \
+    Content/chatactions.cpp \
+    Content/chatsettings.cpp \
     Content/content.cpp \
     Database/databaseconnector.cpp \
     Database/managerdb.cpp \

@@ -24,3 +24,4 @@ public:
     QString             lastGroup       ;
 };
 
+QDebug operator<< (QDebug dbg, const ChatActions &chatActions);

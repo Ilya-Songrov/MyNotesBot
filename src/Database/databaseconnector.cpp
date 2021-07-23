@@ -2,14 +2,7 @@
 
 DatabaseConnector::DatabaseConnector(const QString &pathDatabase, QObject *parent) : QObject(parent)
 {
-#ifdef QT_DEBUG
-//        QFile::remove(pathDatabase);
-#endif
-    db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(pathDatabase);
-    if(!db.open()){
-        qWarning() << "Database not open" << pathDatabase << Qt::endl;
-    }
+    openDb(pathDatabase);
     createAllTables();
 }
 
@@ -32,14 +25,12 @@ bool DatabaseConnector::addNote(const QString &note_text, const QString &group_n
         qWarning() << __FUNCTION__ << "failed: value cannot be empty" << Qt::endl;
         return false;
     }
-    printDatabase(1);
     QSqlQuery query;
     query.prepare("INSERT INTO user_notes (note_text, group_name, chat_id) VALUES (:note_text, :group_name, :chat_id)");
     query.bindValue(":note_text", note_text);
     query.bindValue(":group_name", group_name);
     query.bindValue(":chat_id", varinatChatId(chat_id));
     if(query.exec()){
-        printDatabase(3);
         return true;
     }
     qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
@@ -105,90 +96,17 @@ bool DatabaseConnector::existsGroup(const std::string &group_name, const int64_t
     return existsGroup(QString::fromStdString(group_name), chat_id);
 }
 
-bool DatabaseConnector::setChatActions(const int64_t chat_id, const ChatActions &chatActions)
+Chat DatabaseConnector::getChat(const int64_t chat_id) const
 {
-    qDebug() << "function:" << __FUNCTION__ << Qt::endl;
-    QSqlQuery query;
-    query.prepare("INSERT INTO user_chat_actions (chat_id, currentPlace, currentCommand, lastPlace, lastCommand, lastGroup) "
-                    "VALUES (:chat_id, :currentPlace, :currentCommand, :lastPlace, :lastCommand, :lastGroup)");
-    query.bindValue(":chat_id"          , varinatChatId(chat_id));
-    query.bindValue(":currentPlace"     , chatActions.currentPlace);
-    query.bindValue(":currentCommand"   , chatActions.currentCommand);
-    query.bindValue(":lastPlace"        , chatActions.lastPlace);
-    query.bindValue(":lastCommand"      , chatActions.lastCommand);
-    query.bindValue(":lastGroup"        , chatActions.lastGroup);
-    if(query.exec()){
-        return true;
-    }
-    qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
-    return false;
+    Chat chat;
+    chat.chat_id        = chat_id;
+    chat.chatSettings   = getChatSettings(chat_id);
+    chat.chatActions    = getChatActions(chat_id);
+    chat.vecGroups      = getVecGroups(chat_id);
+    return chat;
 }
 
-ChatActions DatabaseConnector::getChatActions(const int64_t chat_id)
-{
-    QSqlQuery query;
-    query.prepare("SELECT * FROM user_chat_actions WHERE chat_id = :chat_id");
-    query.bindValue(":chat_id", varinatChatId(chat_id));
-    if(!query.exec()){
-        qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
-        return {};
-    }
-    const QSqlRecord record = query.record();
-    const int id_chat_id = record.indexOf("chat_id");
-    const int id_currentPlace = record.indexOf("currentPlace");
-    const int id_currentCommand = record.indexOf("currentCommand");
-    const int id_lastPlace = record.indexOf("lastPlace");
-    const int id_lastCommand = record.indexOf("lastCommand");
-    const int id_lastGroup = record.indexOf("lastGroup");
-    ChatActions chatActions;
-    while (query.next())
-    {
-        bool ok = false;
-        const int chat_id = query.value(id_chat_id).toInt(&ok);
-        if (ok) {
-            chatActions.currentPlace    = (Content::Place)  query.value(id_currentPlace).toInt();
-            chatActions.currentCommand  = (Content::Command)query.value(id_currentCommand).toInt();
-            chatActions.lastPlace       = (Content::Place)  query.value(id_lastPlace).toInt();
-            chatActions.lastCommand     = (Content::Command)query.value(id_lastCommand).toInt();
-            chatActions.lastGroup       = query.value(id_lastGroup).toString();
-            return chatActions;
-        }
-        else{
-            qWarning() << "chatSettings is not valid:" << chat_id << Qt::endl;
-        }
-    }
-    return ChatActions{};
-}
-
-void DatabaseConnector::printDatabase(const int num) const
-{
-    qDebug() << "Begin" << num << __FUNCTION__;
-    QSqlQuery query("SELECT * FROM user_notes");
-    const QSqlRecord record = query.record();
-    const int idChatId      = record.indexOf("chat_id");
-    const int idGroupName   = record.indexOf("group_name");
-    const int idNoteText    = record.indexOf("note_text");
-    while (query.next())
-    {
-        bool ok;
-        const int chat_id           = query.value(idChatId).toInt(&ok);
-        const QString group_name    = query.value(idGroupName).toString();
-        const QString note_text     = query.value(idNoteText).toString();
-        qDebug() << QString("chat_id (%1) group_name (%2) note_text (%3)").arg(chat_id).arg(group_name, note_text);
-        if (!ok) {
-            qWarning() << "Can not convert query to int" << Qt::endl;
-        }
-    }
-    qDebug() << "End" << num << __FUNCTION__ << Qt::endl;
-}
-
-Chat DatabaseConnector::getChat(const int64_t chat_id)
-{
-    // TODO: maybe write me
-    return {};
-}
-
-QVector<Group> DatabaseConnector::getVecGroups(const int64_t chat_id)
+QVector<Group> DatabaseConnector::getVecGroups(const int64_t chat_id) const
 {
     QVector<Group> vec;
     QSqlQuery query;
@@ -216,13 +134,13 @@ QVector<Group> DatabaseConnector::getVecGroups(const int64_t chat_id)
         group.vecNotes          = getVecNotes(group.group_name, chat_id);
         vec.append(group);
         if (!okX || !okY) {
-            qWarning() << "Can not convert query to int" << Qt::endl;
+            qWarning() << "Can not convert query to number" << __FUNCTION__ << "chat_id" << chat_id << Qt::endl;
         }
     }
     return vec;
 }
 
-QVector<Note> DatabaseConnector::getVecNotes(const QString &group_name, const int64_t chat_id)
+QVector<Note> DatabaseConnector::getVecNotes(const QString &group_name, const int64_t chat_id) const
 {
     QVector<Note> vec;
     QSqlQuery query;
@@ -248,8 +166,145 @@ QVector<Note> DatabaseConnector::getVecNotes(const QString &group_name, const in
         note.note_id        = query.value(idNoteId).toInt(&ok);
         vec.append(note);
         if (!ok) {
-            qWarning() << "Can not convert query to int" << Qt::endl;
+            qWarning() << "Can not convert query to number" << __FUNCTION__ << "chat_id" << chat_id << Qt::endl;
         }
+    }
+    return vec;
+}
+
+bool DatabaseConnector::setChatActions(const ChatActions &chatActions, const int64_t chat_id)
+{
+    QSqlQuery query;
+    query.prepare("INSERT OR REPLACE INTO user_chat_actions (chat_id, currentPlace, currentCommand, lastPlace, lastCommand, lastGroup) "
+                    "VALUES (:chat_id, :currentPlace, :currentCommand, :lastPlace, :lastCommand, :lastGroup)");
+    query.bindValue(":currentPlace"     , chatActions.currentPlace);
+    query.bindValue(":currentCommand"   , chatActions.currentCommand);
+    query.bindValue(":lastPlace"        , chatActions.lastPlace);
+    query.bindValue(":lastCommand"      , chatActions.lastCommand);
+    query.bindValue(":lastGroup"        , chatActions.lastGroup);
+    query.bindValue(":chat_id"          , varinatChatId(chat_id));
+    if(query.exec()){
+        return true;
+    }
+    qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
+    return false;
+}
+
+ChatActions DatabaseConnector::getChatActions(const int64_t chat_id) const
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM user_chat_actions WHERE chat_id = :chat_id");
+    query.bindValue(":chat_id", varinatChatId(chat_id));
+    if(!query.exec()){
+        qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
+        return {};
+    }
+    const QSqlRecord record = query.record();
+    const int id_chat_id = record.indexOf("chat_id");
+    const int id_currentPlace = record.indexOf("currentPlace");
+    const int id_currentCommand = record.indexOf("currentCommand");
+    const int id_lastPlace = record.indexOf("lastPlace");
+    const int id_lastCommand = record.indexOf("lastCommand");
+    const int id_lastGroup = record.indexOf("lastGroup");
+    while (query.next())
+    {
+        bool ok = false;
+        const int chat_id = query.value(id_chat_id).toInt(&ok);
+        if (ok) {
+            ChatActions chatActions;
+            chatActions.currentPlace    = (Content::Place)  query.value(id_currentPlace).toInt();
+            chatActions.currentCommand  = (Content::Command)query.value(id_currentCommand).toInt();
+            chatActions.lastPlace       = (Content::Place)  query.value(id_lastPlace).toInt();
+            chatActions.lastCommand     = (Content::Command)query.value(id_lastCommand).toInt();
+            chatActions.lastGroup       = query.value(id_lastGroup).toString();
+            return chatActions;
+        }
+        else{
+            qWarning() << "chatSettings is not valid:" << chat_id << Qt::endl;
+        }
+    }
+    return ChatActions{};
+}
+
+bool DatabaseConnector::setChatSettings(const int64_t chat_id, const ChatSettings &chatSettings)
+{
+    QSqlQuery query;
+    query.prepare("INSERT OR REPLACE INTO user_chat_settings (language, quantityGroupsX, chat_id) "
+                    "VALUES (:language, :quantityGroupsX, :chat_id)");
+    query.bindValue(":language", chatSettings.language);
+    query.bindValue(":quantityGroupsX", chatSettings.quantityGroupsX);
+    query.bindValue(":chat_id", varinatChatId(chat_id));
+    if(query.exec()){
+        return true;
+    }
+    qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
+    return false;
+}
+
+ChatSettings DatabaseConnector::getChatSettings(const int64_t chat_id) const
+{
+    QSqlQuery query(QString("SELECT * FROM user_chat_settings WHERE (chat_id = %1)").arg(varinatChatId(chat_id).toString()));
+    const QSqlRecord record = query.record();
+    const int id_chat_id            = record.indexOf("chat_id");
+    const int id_language           = record.indexOf("language");
+    const int id_quantityGroupsX    = record.indexOf("quantityGroupsX");
+    while (query.next())
+    {
+        bool ok_quantityGroupsX = false;
+        int quantityGroupsX = query.value(id_quantityGroupsX).toInt(&ok_quantityGroupsX);
+        if (!quantityGroupsX) {
+            qWarning() << "Can not convert query to number(1)" << __FUNCTION__ << "chat_id" << chat_id << Qt::endl;
+            quantityGroupsX = ChatSettings().quantityGroupsX;
+        }
+        ChatSettings chatSettings;
+        chatSettings.language           = query.value(id_language).toString();
+        chatSettings.quantityGroupsX    = quantityGroupsX;
+        bool ok_chat_id = false;
+        const int chat_id_read = query.value(id_chat_id).toInt(&ok_chat_id);
+        if (!ok_chat_id) {
+            qWarning() << "Can not convert query to number(2)" << __FUNCTION__ << "chat_id" << chat_id << Qt::endl;
+            continue;
+        }
+        if (chat_id_read == chat_id) {
+            return chatSettings;
+        }
+    }
+    return ChatSettings{};
+}
+
+#ifdef QT_DEBUG
+void DatabaseConnector::printDatabase(const int num) const
+{
+    qDebug() << "Begin" << __FUNCTION__ << num ;
+    const auto allChatId = getAllChatId();
+    for (const auto chat_id : allChatId) {
+        qDebug() << getChat(chat_id);
+    }
+    qDebug() << "End" << __FUNCTION__ << num << Qt::endl;
+}
+#endif
+
+QVector<std::int64_t> DatabaseConnector::getAllChatId() const
+{
+    // NOTE: maybe create new table all_chats
+    QVector<std::int64_t> vec;
+    QSqlQuery query;
+    query.prepare("SELECT * FROM user_chat_actions");
+    if(!query.exec()){
+        qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
+        return {};
+    }
+    const QSqlRecord record = query.record();
+    const int id_chat_id    = record.indexOf("chat_id");
+    while (query.next())
+    {
+        bool ok = false;
+        const int chat_id = query.value(id_chat_id).toInt(&ok);
+        if (!ok) {
+            qWarning() << "Can not convert query to number" << __FUNCTION__ << "chat_id" << chat_id << Qt::endl;
+            continue;
+        }
+        vec.append(chat_id);
     }
     return vec;
 }
@@ -268,36 +323,6 @@ bool DatabaseConnector::addOnlyGroup(const QString &group_name, const GroupPosit
     query.bindValue(":chat_id", varinatChatId(chat_id));
     if(query.exec()){
         return true;
-    }
-    qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
-    return false;
-}
-
-std::shared_ptr<QMap<uint64_t, ChatSettings> > DatabaseConnector::getAllChatSettings()
-{
-    std::shared_ptr<QMap<uint64_t, ChatSettings> > mapChatSettings(new QMap<uint64_t, ChatSettings>);
-    fillMapChatSettings(mapChatSettings);
-    return mapChatSettings;
-}
-
-ChatSettings DatabaseConnector::getChatSettings(const int64_t chat_id)
-{
-    std::shared_ptr<QMap<uint64_t, ChatSettings> > mapChatSettings(new QMap<uint64_t, ChatSettings>);
-    fillMapChatSettings(mapChatSettings, chat_id);
-    if (mapChatSettings->size() > 0) {
-        return mapChatSettings->first();
-    }
-    return ChatSettings{};
-}
-
-bool DatabaseConnector::updateChatSettings(const int64_t chat_id, const ChatSettings &chatSettings)
-{
-    QSqlQuery query;
-    query.prepare("UPDATE user_chat_settings SET (language = :language) WHERE (chat_id = :chat_id)");
-    query.bindValue(":chat_id", varinatChatId(chat_id));
-    query.bindValue(":language", chatSettings.language);
-    if(query.exec()){
-        return query.numRowsAffected();
     }
     qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
     return false;
@@ -356,35 +381,15 @@ bool DatabaseConnector::existsNote(const QString &note_text, const QString &grou
     return query.next();
 }
 
-void DatabaseConnector::fillMapChatSettings(std::shared_ptr<QMap<uint64_t, ChatSettings> > mapChatSettings, const int64_t chat_id)
+void DatabaseConnector::openDb(const QString &pathDatabase)
 {
-    QString chatIfValid;
-    if (chat_id != -1) {
-        chatIfValid = QString(" WHERE (chat_id = %1)").arg(varinatChatId(chat_id).toString());
-    }
-    QSqlQuery query("SELECT * FROM user_chat_settings" + chatIfValid);
-    const QSqlRecord record = query.record();
-    const int id_chat_id            = record.indexOf("chat_id");
-    const int id_language           = record.indexOf("language");
-    const int id_quantityGroupsX    = record.indexOf("quantityGroupsX");
-    while (query.next())
-    {
-        bool ok_quantityGroupsX = false;
-        int quantityGroupsX = query.value(id_quantityGroupsX).toInt(&ok_quantityGroupsX);
-        if (!quantityGroupsX) {
-            quantityGroupsX = ChatSettings().quantityGroupsX;
-        }
-        ChatSettings chatSettings;
-        chatSettings.language           = query.value(id_language).toString();
-        chatSettings.quantityGroupsX    = quantityGroupsX;
-        bool ok_chat_id = false;
-        const int chat_id_read = query.value(id_chat_id).toInt(&ok_chat_id);
-        if (ok_chat_id) {
-            mapChatSettings->insert(chat_id_read, chatSettings);
-        }
-        else{
-            qWarning() << "ChatSettings is not valid!" << "chat_id_read" << chat_id_read << "chat_id" << chat_id << Qt::endl;
-        }
+#ifdef QT_DEBUG
+//        QFile::remove(pathDatabase);
+#endif
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(pathDatabase);
+    if(!db.open()){
+        qWarning() << "Database not open" << pathDatabase << Qt::endl;
     }
 }
 
@@ -459,7 +464,8 @@ bool DatabaseConnector::createTable_UserChatSettings()
     QSqlQuery query;
     query.prepare("CREATE TABLE IF NOT EXISTS user_chat_settings ("
             "chat_id INTEGER NOT NULL,"
-            "language TEXT,"
+            "language TEXT NOT NULL,"
+            "quantityGroupsX INTEGER NOT NULL,"
             "PRIMARY KEY (chat_id),"
             "UNIQUE (chat_id)"
             ");");

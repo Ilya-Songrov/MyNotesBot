@@ -28,8 +28,8 @@ public:
 
 private:
     void setSettings();
-    void anyMessageWasWrite(const Message::Ptr message);
-    void callbackQueryWasWrite(const CallbackQuery::Ptr callbackQuery);
+    void anyMessageWasWrited(const Message::Ptr message);
+    void callbackQueryWasWrited(const CallbackQuery::Ptr callbackQuery);
 
     ChatActions getChatActions(const std::int64_t chat_id, const std::string &currentText);
     void changeObjPtrPlaceBot(const Content::Place place);

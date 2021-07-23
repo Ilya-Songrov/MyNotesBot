@@ -34,19 +34,21 @@ public:
     bool existsGroup(const QString &group_name, const std::int64_t chat_id);
     bool existsGroup(const std::string &group_name, const std::int64_t chat_id);
 
-    bool setChatActions(const std::int64_t chat_id, const ChatActions &chatActions);
-    ChatActions getChatActions(const std::int64_t chat_id);
+    Chat getChat(const std::int64_t chat_id) const;
+    QVector<Group> getVecGroups(const std::int64_t chat_id) const;
+    QVector<Note> getVecNotes(const QString &group_name, const std::int64_t chat_id) const;
 
+    bool setChatActions(const ChatActions &chatActions, const std::int64_t chat_id);
+    ChatActions getChatActions(const std::int64_t chat_id) const;
+
+    bool setChatSettings(const std::int64_t chat_id, const ChatSettings &chatSettings);
+    ChatSettings getChatSettings(const std::int64_t chat_id) const;
+
+#ifdef QT_DEBUG
     void printDatabase(const int num) const;
-
-    Chat getChat(const std::int64_t chat_id);
-    QVector<Group> getVecGroups(const std::int64_t chat_id);
-    QVector<Note> getVecNotes(const QString &group_name, const std::int64_t chat_id);
-
+#endif
 protected:
-    std::shared_ptr<QMap<std::uint64_t, ChatSettings> > getAllChatSettings();
-    virtual ChatSettings getChatSettings(const std::int64_t chat_id);
-    virtual bool updateChatSettings(const std::int64_t chat_id, const ChatSettings &chatSettings);
+    QVector<std::int64_t> getAllChatId() const;
 
     bool addOnlyGroup(const QString &group_name, const GroupPosition &groupPosition, const std::int64_t chat_id);
     bool addOnlyGroup(const std::string &group_name, const GroupPosition &groupPosition, const std::int64_t chat_id);
@@ -58,8 +60,7 @@ protected:
     inline QVariant varinatChatId(const std::int64_t chat_id) const { return QVariant::fromValue(chat_id); }
 
 private:
-    void fillMapChatSettings(std::shared_ptr<QMap<uint64_t, ChatSettings> > mapChatSettings, const std::int64_t chat_id = -1);
-
+    void openDb(const QString &pathDatabase);
     void createAllTables();
     bool createTable_UserGroups();
     bool createTable_UserNotes();

@@ -12,14 +12,10 @@
 
 #include "managerdb.h"
 
-ManagerDb::ManagerDb(const QString &pathDatabase, const SettingsQuery settingsQuery, QObject *parent)
+ManagerDb::ManagerDb(const QString &pathDatabase, QObject *parent)
     : DatabaseConnector(pathDatabase, parent)
-    , sq(settingsQuery)
 {
     // TODO: "◾️ " + note
-    if (sq == LoadAllSettingsInMemory) {
-        loadAllSettings();
-    }
 }
 
 ManagerDb::~ManagerDb()
@@ -100,34 +96,6 @@ QVector<QStringList> ManagerDb::getLayoutsGroups(const int64_t chat_id)
         vecLayouts.append(list);
     }
     return vecLayouts;
-}
-
-ChatSettings ManagerDb::getChatSettings(const int64_t chat_id)
-{
-    if (sq == LoadAllSettingsInMemory) {
-        return mapAllChatSettings->value(chat_id);
-    }
-    else if (sq == ReadSettingsFromDatabaseEveryTime) {
-        return DatabaseConnector::getChatSettings(chat_id);
-    }
-    return {};
-}
-
-bool ManagerDb::updateChatSettings(const int64_t chat_id, const ChatSettings &chatSettings)
-{
-    if (sq == LoadAllSettingsInMemory) {
-        mapAllChatSettings->insert(chat_id, chatSettings);
-        DatabaseConnector::updateChatSettings(chat_id, chatSettings);
-    }
-    else if (sq == ReadSettingsFromDatabaseEveryTime) {
-        DatabaseConnector::updateChatSettings(chat_id, chatSettings);
-    }
-    return false;
-}
-
-void ManagerDb::loadAllSettings()
-{
-    mapAllChatSettings = DatabaseConnector::getAllChatSettings();
 }
 
 GroupPosition ManagerDb::getNextGroupPosition(const int64_t chat_id)

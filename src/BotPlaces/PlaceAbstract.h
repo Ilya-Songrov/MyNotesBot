@@ -33,7 +33,7 @@ protected:
     void sendMainMenuMessage(const std::int64_t chat_id, const std::string &message);
     void sendInlineKeyboardMarkupMessage(const std::int64_t chat_id, const std::string &message, const InlineKeyboardMarkup::Ptr inlineKeyboardMarkup);
 
-    inline void setChatActions(const std::int64_t chat_id, const ChatActions &chatActions){ managerDb->setChatActions(chat_id, chatActions); }
+    inline void setChatActions(const std::int64_t chat_id, const ChatActions &chatActions){ managerDb->setChatActions(chatActions, chat_id); }
     inline ChatActions getChatActions(const std::int64_t chat_id){ return managerDb->getChatActions(chat_id); }
     void updateChatActionsLastGroup(const std::int64_t chat_id, const QString &lastGroup);
     void updateChatActionsCurrentCommand(const std::int64_t chat_id, const Content::Command currentCommand);

@@ -38,28 +38,28 @@ void ManagerBot::startBot()
 
 void ManagerBot::setSettings()
 {
-    bot->getEvents().onAnyMessage(std::bind(&ManagerBot::anyMessageWasWrite, this, std::placeholders::_1));
-    bot->getEvents().onCallbackQuery(std::bind(&ManagerBot::callbackQueryWasWrite, this, std::placeholders::_1));
+    bot->getEvents().onAnyMessage(std::bind(&ManagerBot::anyMessageWasWrited, this, std::placeholders::_1));
+    bot->getEvents().onCallbackQuery(std::bind(&ManagerBot::callbackQueryWasWrited, this, std::placeholders::_1));
 
     bot->getEvents().onInlineQuery([](const InlineQuery::Ptr){ qDebug() << "onInlineQuery" << Qt::endl; });
     bot->getEvents().onChosenInlineResult([](const ChosenInlineResult::Ptr){ qDebug() << "onChosenInlineResult" << Qt::endl; });
 //    bot->getEvents().onCallbackQuery([](const CallbackQuery::Ptr &callbackQuery){ qDebug() << "onCallbackQuery" << callbackQuery->data.c_str() << Qt::endl; });
 }
 
-void ManagerBot::anyMessageWasWrite(const Message::Ptr message)
+void ManagerBot::anyMessageWasWrited(const Message::Ptr message)
 {
     const auto chatActions = getChatActions(message->chat->id, message->text);
     printChatActions(QString(__FUNCTION__), chatActions, message->text);
-    managerDb->setChatActions(message->chat->id, chatActions);
+    managerDb->setChatActions(chatActions, message->chat->id);
     changeObjPtrPlaceBot(chatActions.currentPlace);
     placeBot->slotOnCommand(message, chatActions);
 }
 
-void ManagerBot::callbackQueryWasWrite(const CallbackQuery::Ptr callbackQuery)
+void ManagerBot::callbackQueryWasWrited(const CallbackQuery::Ptr callbackQuery)
 {
     const auto chatActions = getChatActions(callbackQuery->message->chat->id, callbackQuery->data);
     printChatActions(QString(__FUNCTION__), chatActions, callbackQuery->message->text);
-    managerDb->setChatActions(callbackQuery->message->chat->id, chatActions);
+    managerDb->setChatActions(chatActions, callbackQuery->message->chat->id);
     changeObjPtrPlaceBot(chatActions.currentPlace);
     placeBot->slotOnCallbackQuery(callbackQuery, chatActions);
 }
@@ -110,11 +110,7 @@ void ManagerBot::printChatActions(const QString &header, const ChatActions &chat
     const QString frameHeader = QString(header).leftJustified(justified, '-').rightJustified(lenghtSymbols, placeholder);
 
     qDebug() << frameHeader << Qt::endl;
-    qDebug() << "currentPlace   :" << chatActions.currentPlace     ;
-    qDebug() << "currentCommand :" << chatActions.currentCommand   ;
-    qDebug() << "lastPlace      :" << chatActions.lastPlace        ;
-    qDebug() << "lastCommand    :" << chatActions.lastCommand      ;
-    qDebug() << "lastGroup      :" << chatActions.lastGroup        ;
-    qDebug() << "messageText    :" << messageText.c_str()       ;
+    qDebug() << chatActions;
+    qDebug() << "messageText:" << messageText.c_str()       ;
     qDebug() << Qt::endl << frameHeader << Qt::endl;
 }
