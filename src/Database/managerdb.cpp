@@ -15,7 +15,7 @@
 ManagerDb::ManagerDb(const QString &pathDatabase, QObject *parent)
     : DatabaseConnector(pathDatabase, parent)
 {
-    // TODO: "◾️ " + note
+
 }
 
 ManagerDb::~ManagerDb()

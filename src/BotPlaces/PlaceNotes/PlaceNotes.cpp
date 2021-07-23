@@ -155,7 +155,7 @@ std::string PlaceNotes::getListNotes(const QString &group, const int64_t chat_id
 
 std::string PlaceNotes::getListNotes(const std::string &group, const int64_t chat_id)
 {
-    const QString answer { QObject::tr("List notes") + QString(" (%1):\n").arg(group.c_str()) + managerDb->getListNotes(group, chat_id).join('\n') };
+    const QString answer { QObject::tr("List notes") + QString(" (%1):\n◾️ ").arg(group.c_str()) + managerDb->getListNotes(group, chat_id).join("\n◾️ ") };
     return answer.toStdString();
 }
 
