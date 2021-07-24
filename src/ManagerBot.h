@@ -51,7 +51,7 @@ private:
 
 private:
     LogSaver logSaver;
-    AppTranslator appTranslator; // TODO: rewrite this
+    AppTranslator appTranslator; // TODO: rewrite this or not use QObject::tr()
     PlaceStart          *placeStart     ;
     PlaceNotes          *placeNotes     ;
     PlaceAdditional     *placeAdditional;
