@@ -1,13 +1,22 @@
-#include "ManagerBot.h"
+/**************************************************************************
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/.
+**
+**************************************************************************/
 
+#include "ManagerBot.h"
 
 ManagerBot::ManagerBot(const QString token, QObject *parent) : QObject(parent)
   , appTranslator(":/translationFiles/NotesBot_UA.qm")
-  , mapAllChats(new QMap<std::uint64_t, ChatActions>())
 {
     Content::initContent();
     initGlobalData(token.isEmpty() ? getTokenFromFile() : token);
-    PlaceAbstract::initMapAllChats(mapAllChats);
 
     placeStart          = new PlaceStart    (this);
     placeNotes          = new PlaceNotes    (this);
@@ -40,28 +49,28 @@ void ManagerBot::startBot()
 
 void ManagerBot::setSettings()
 {
-    bot->getEvents().onAnyMessage(std::bind(&ManagerBot::anyMessageWasWrite, this, std::placeholders::_1));
-    bot->getEvents().onCallbackQuery(std::bind(&ManagerBot::callbackQueryWasWrite, this, std::placeholders::_1));
+    bot->getEvents().onAnyMessage(std::bind(&ManagerBot::anyMessageWasWrited, this, std::placeholders::_1));
+    bot->getEvents().onCallbackQuery(std::bind(&ManagerBot::callbackQueryWasWrited, this, std::placeholders::_1));
 
     bot->getEvents().onInlineQuery([](const InlineQuery::Ptr){ qDebug() << "onInlineQuery" << Qt::endl; });
     bot->getEvents().onChosenInlineResult([](const ChosenInlineResult::Ptr){ qDebug() << "onChosenInlineResult" << Qt::endl; });
 //    bot->getEvents().onCallbackQuery([](const CallbackQuery::Ptr &callbackQuery){ qDebug() << "onCallbackQuery" << callbackQuery->data.c_str() << Qt::endl; });
 }
 
-void ManagerBot::anyMessageWasWrite(const Message::Ptr message)
+void ManagerBot::anyMessageWasWrited(const Message::Ptr message)
 {
     const auto chatActions = getChatActions(message->chat->id, message->text);
     printChatActions(QString(__FUNCTION__), chatActions, message->text);
-    mapAllChats->insert(message->chat->id, chatActions);
+    managerDb->setChatActions(chatActions, message->chat->id);
     changeObjPtrPlaceBot(chatActions.currentPlace);
     placeBot->slotOnCommand(message, chatActions);
 }
 
-void ManagerBot::callbackQueryWasWrite(const CallbackQuery::Ptr callbackQuery)
+void ManagerBot::callbackQueryWasWrited(const CallbackQuery::Ptr callbackQuery)
 {
     const auto chatActions = getChatActions(callbackQuery->message->chat->id, callbackQuery->data);
     printChatActions(QString(__FUNCTION__), chatActions, callbackQuery->message->text);
-    mapAllChats->insert(callbackQuery->message->chat->id, chatActions);
+    managerDb->setChatActions(chatActions, callbackQuery->message->chat->id);
     changeObjPtrPlaceBot(chatActions.currentPlace);
     placeBot->slotOnCallbackQuery(callbackQuery, chatActions);
 }
@@ -69,11 +78,11 @@ void ManagerBot::callbackQueryWasWrite(const CallbackQuery::Ptr callbackQuery)
 ChatActions ManagerBot::getChatActions(const int64_t chat_id, const std::string &currentText)
 {
     const Content::PlaceCommand currentPlaceCommand = Content::getPlaceCommand(currentText);
-    ChatActions chatActions =     mapAllChats->value(chat_id);
-    chatActions.lastPlace      = chatActions.currentPlace;
-    chatActions.lastCommand    = chatActions.currentCommand;
-    chatActions.currentPlace   = currentPlaceCommand.place;
-    chatActions.currentCommand = currentPlaceCommand.command;
+    ChatActions chatActions     = managerDb->getChatActions(chat_id);
+    chatActions.lastPlace       = chatActions.currentPlace;
+    chatActions.lastCommand     = chatActions.currentCommand;
+    chatActions.currentPlace    = currentPlaceCommand.place;
+    chatActions.currentCommand  = currentPlaceCommand.command;
     return chatActions;
 }
 
@@ -95,7 +104,11 @@ void ManagerBot::changeObjPtrPlaceBot(const Content::Place place)
 
 QString ManagerBot::getTokenFromFile()
 {
+#ifdef QT_DEBUG
+    const QJsonDocument doc = FileWorker::readFileJson("../../config.json");
+#else
     const QJsonDocument doc = FileWorker::readFileJson("../config.json");
+#endif
     const QJsonObject obj = doc.object();
     return obj.value("token").toString();
 }
@@ -108,11 +121,7 @@ void ManagerBot::printChatActions(const QString &header, const ChatActions &chat
     const QString frameHeader = QString(header).leftJustified(justified, '-').rightJustified(lenghtSymbols, placeholder);
 
     qDebug() << frameHeader << Qt::endl;
-    qDebug() << "currentPlace   :" << chatActions.currentPlace     ;
-    qDebug() << "currentCommand :" << chatActions.currentCommand   ;
-    qDebug() << "lastPlace      :" << chatActions.lastPlace        ;
-    qDebug() << "lastCommand    :" << chatActions.lastCommand      ;
-    qDebug() << "lastGroup      :" << chatActions.lastGroup        ;
-    qDebug() << "messageText    :" << messageText.c_str()       ;
+    qDebug() << chatActions;
+    qDebug() << "messageText:" << messageText.c_str()       ;
     qDebug() << Qt::endl << frameHeader << Qt::endl;
 }

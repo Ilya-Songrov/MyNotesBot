@@ -15,7 +15,11 @@
 #include <QObject>
 #include <QString>
 #include <QDate>
+#include <QDebug>
 
 struct ChatSettings{
-    QString language;
+    QString language    = "en";
+    int quantityGroupsX = 4;
 };
+
+QDebug operator<<(QDebug dbg, const ChatSettings &chatSettings);

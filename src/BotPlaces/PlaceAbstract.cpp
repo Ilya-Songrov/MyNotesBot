@@ -1,15 +1,20 @@
-#include "PlaceAbstract.h"
+/**************************************************************************
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/.
+**
+**************************************************************************/
 
-std::shared_ptr<QMap<std::uint64_t, ChatActions> > PlaceAbstract::mapAllChats;
+#include "PlaceAbstract.h"
 
 PlaceAbstract::PlaceAbstract(QObject *parent) : QObject(parent)
 {
 
-}
-
-void PlaceAbstract::initMapAllChats(std::shared_ptr<QMap<uint64_t, ChatActions> > mapAllChatsPtr)
-{
-    mapAllChats = mapAllChatsPtr;
 }
 
 void PlaceAbstract::slotOnCommand(const Message::Ptr &message, const ChatActions &chatActions)
@@ -131,19 +136,7 @@ InlineKeyboardMarkup::Ptr PlaceAbstract::createInlineKeyboardMarkup(const QVecto
 ReplyKeyboardMarkup::Ptr PlaceAbstract::getMainMenuButtons(const int64_t chat_id)
 {
     static const QStringList buttonsAddRemove = { Content::getCommandStr(Content::Notes_AddNote), Content::getCommandStr(Content::Notes_RemoveNote) };
-    const auto listGroups = managerDatabase->getListGroups(chat_id);
-    QVector<QStringList> vecLayouts;
-    QStringList listTemp;
-    for (int var = listGroups.size() - 1; var >= 0; --var) {
-        if ((var + 1) % 4 == 0 && !listTemp.isEmpty()) {
-            vecLayouts.append(listTemp);
-            listTemp.clear();
-        }
-        listTemp.insert(0, listGroups.at(var));
-    }
-    if (!listTemp.isEmpty()) {
-        vecLayouts.push_back(listTemp);
-    }
+    QVector<QStringList> vecLayouts = managerDb->getLayoutsGroups(chat_id);
     vecLayouts.append(buttonsAddRemove);
     const auto kb = createReplyKeyboardMarkup(vecLayouts, true, false);
     return kb;

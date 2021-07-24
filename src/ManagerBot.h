@@ -1,3 +1,15 @@
+/**************************************************************************
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/.
+**
+**************************************************************************/
+
 #pragma once
 
 #include <QObject>
@@ -8,8 +20,8 @@
 #include "Adjutants/AppTranslator.h"
 #include "FileWorker.h"
 #include "GlobalData/GlobalData.h"
-#include "Content/Content.h"
-#include "Content/ChatActions.h"
+#include "Content/content.h"
+#include "Content/chatactions.h"
 #include "BotPlaces/PlaceStart/placestart.h"
 #include "BotPlaces/PlaceNotes/PlaceNotes.h"
 #include "BotPlaces/PlaceAdditional/PlaceAdditional.h"
@@ -28,8 +40,8 @@ public:
 
 private:
     void setSettings();
-    void anyMessageWasWrite(const Message::Ptr message);
-    void callbackQueryWasWrite(const CallbackQuery::Ptr callbackQuery);
+    void anyMessageWasWrited(const Message::Ptr message);
+    void callbackQueryWasWrited(const CallbackQuery::Ptr callbackQuery);
 
     ChatActions getChatActions(const std::int64_t chat_id, const std::string &currentText);
     void changeObjPtrPlaceBot(const Content::Place place);
@@ -39,11 +51,10 @@ private:
 
 private:
     LogSaver logSaver;
-    AppTranslator appTranslator;
+    AppTranslator appTranslator; // TODO: rewrite this or not use QObject::tr()
     PlaceStart          *placeStart     ;
     PlaceNotes          *placeNotes     ;
     PlaceAdditional     *placeAdditional;
     PlaceAbstract       *placeBot       ;
-    std::shared_ptr<QMap<std::uint64_t, ChatActions> > mapAllChats;
 };
 

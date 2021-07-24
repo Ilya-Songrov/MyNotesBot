@@ -10,17 +10,15 @@
 **
 **************************************************************************/
 
-#pragma once
+#include "chatactions.h"
 
-#include "Content.h"
 
-class ChatActions
+QDebug operator<< (QDebug dbg, const ChatActions &chatActions)
 {
-public:
-    Content::Place      currentPlace    = Content::Place::MultiPlace;
-    Content::Command    currentCommand  = Content::Command::MultiPlace_AnyMessage;
-    Content::Place      lastPlace       = Content::Place::MultiPlace;
-    Content::Command    lastCommand     = Content::Command::MultiPlace_AnyMessage;
-    QString             lastGroup       ;
-};
-
+    dbg << "currentPlace   :" << chatActions.currentPlace     << Qt::endl;
+    dbg << "currentCommand :" << chatActions.currentCommand   << Qt::endl;
+    dbg << "lastPlace      :" << chatActions.lastPlace        << Qt::endl;
+    dbg << "lastCommand    :" << chatActions.lastCommand      << Qt::endl;
+    dbg << "lastGroup      :" << chatActions.lastGroup        << Qt::endl;
+    return dbg;
+}

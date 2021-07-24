@@ -10,17 +10,10 @@
 **
 **************************************************************************/
 
-#pragma once
+#include "chatsettings.h"
 
-#include <QObject>
-#include <QCoreApplication>
-
-#include <managerdb.h>
-#include <tgbot/tgbot.h>
-using namespace TgBot;
-
-extern std::unique_ptr<Bot> bot;
-extern std::unique_ptr<ManagerDb> managerDb;
-
-void initGlobalData(const QString &token);
-
+QDebug operator<<(QDebug dbg, const ChatSettings &chatSettings)
+{
+    dbg << QString("ChatSettings(language: %1, quantityGroupsX: %2)").arg(chatSettings.language).arg(chatSettings.quantityGroupsX) << Qt::endl;
+    return dbg;
+}
