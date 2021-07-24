@@ -1,3 +1,15 @@
+/**************************************************************************
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/.
+**
+**************************************************************************/
+
 #include "PlaceNotes.h"
 
 PlaceNotes::PlaceNotes(QObject *parent) : PlaceAbstract(parent)
@@ -114,7 +126,7 @@ void PlaceNotes::onAnyCallbackQuery(const CallbackQuery::Ptr &callbackQuery)
         const auto vecNotes = managerDb->getVecNotes(data, chat_id);
         QList<QPair<QString, QString> > listButtons;
         for (const auto &note: vecNotes) {
-            listButtons.append(qMakePair(note.note_text.left(15) + " ...", note.note_id));
+            listButtons.append(qMakePair(note.note_text.left(15) + " ...", QString::number(note.note_id)));
         }
         listButtons.append(qMakePair(removeGroup, data));
         const auto inlineButtonNotes = createOneColumnInlineKeyboardMarkup(listButtons);
@@ -155,7 +167,9 @@ std::string PlaceNotes::getListNotes(const QString &group, const int64_t chat_id
 
 std::string PlaceNotes::getListNotes(const std::string &group, const int64_t chat_id)
 {
-    const QString answer { QObject::tr("List notes") + QString(" (%1):\n◾️ ").arg(group.c_str()) + managerDb->getListNotes(group, chat_id).join("\n◾️ ") };
+    const auto listNotes = managerDb->getListNotes(group, chat_id).join("\n◾️ ");
+    const QString listNotesStr = QString(" (%1):").arg(group.c_str()) + (listNotes.isEmpty() ? "" : "\n◾️ ") + listNotes;
+    const QString answer = QObject::tr("List notes") + listNotesStr;
     return answer.toStdString();
 }
 

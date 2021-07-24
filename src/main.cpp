@@ -1,11 +1,23 @@
+/**************************************************************************
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/.
+**
+**************************************************************************/
+
 #include <QCoreApplication>
 
 #include "applicationnotify.h"
 #include "ManagerBot.h"
 
-#define VERSION_MAJOR    "0"
-#define VERSION_MINOR    "4"
-#define VERSION_BUILD    "1"
+#define VERSION_MAJOR    "1"
+#define VERSION_MINOR    "0"
+#define VERSION_BUILD    "0"
 #define APP_VERSION QString(VERSION_MAJOR) + "." + QString(VERSION_MINOR) + "." + QString(VERSION_BUILD)
 
 int main(int argc, char *argv[])

@@ -1,3 +1,15 @@
+/**************************************************************************
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/.
+**
+**************************************************************************/
+
 #include "databaseconnector.h"
 
 DatabaseConnector::DatabaseConnector(const QString &pathDatabase, QObject *parent) : QObject(parent)
@@ -278,12 +290,12 @@ ChatSettings DatabaseConnector::getChatSettings(const int64_t chat_id) const
 #ifdef QT_DEBUG
 void DatabaseConnector::printDatabase(const int num) const
 {
-    qDebug() << "Begin" << __FUNCTION__ << num ;
+    qDebug() << "\033[48;2;112;95;102m" << "Begin" << __FUNCTION__ << num ;
     const auto allChatId = getAllChatId();
     for (const auto chat_id : allChatId) {
         qDebug() << getChat(chat_id);
     }
-    qDebug() << "End" << __FUNCTION__ << num << Qt::endl;
+    qDebug() << "End" << __FUNCTION__ << num << "\033[0m" << Qt::endl;
 }
 #endif
 
