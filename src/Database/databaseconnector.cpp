@@ -75,7 +75,6 @@ bool DatabaseConnector::replaceNote(const QString &newNote, const QString &oldNo
 
 bool DatabaseConnector::deleteNoteViaID(const int note_id, const int64_t chat_id)
 {
-    printDatabase(1);
     if (note_id < 0){
         qWarning() << __FUNCTION__ << "failed: value cannot be < 0" << Qt::endl;
         return false;
@@ -85,10 +84,8 @@ bool DatabaseConnector::deleteNoteViaID(const int note_id, const int64_t chat_id
     query.bindValue(":note_id", note_id);
     query.bindValue(":chat_id", varinatChatId(chat_id));
     if(query.exec()){
-        printDatabase(2);
         return true;
     }
-    printDatabase(3);
     qWarning() << __FUNCTION__ << "failed: " << query.lastError() << Qt::endl;
     return false;
 }
