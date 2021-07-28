@@ -28,14 +28,14 @@ git submodule update --init --recursive
 
 # build tgbot-cpp
 pathBuildTgbot=$path_builds_submodules/tgbot
-mkdir $pathBuildTgbot
+mkdir -p $pathBuildTgbot
 cd $pathBuildTgbot
 cmake $relpath/tgbot-cpp
 make
 
 # build LogSaver
 pathBuildLogSaver=$path_builds_submodules/LogSaver
-mkdir $pathBuildLogSaver
+mkdir -p $pathBuildLogSaver
 cd $pathBuildLogSaver
 $pathToQmake $relpath/LogSaver
 make
