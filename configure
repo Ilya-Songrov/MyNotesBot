@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 
 #-------------------------------------------------------------------------------
@@ -8,15 +8,18 @@
 # the directory of this script is the "source tree"
 relpath=`dirname $0`
 relpath=`(cd "$relpath"; /bin/pwd)`
+prog="$(basename $0)"
+path_of_dir=$(realpath .)
+
 
 if [ "$1" == "-h" ]; then
 	echo -e "Usage: bash $0 <path_to_qmake> \
-	\n\n# Arguments description"
+	\n\n# For example: bash $0 ~/Qt/5.15.2/gcc_64/bin/qmake"
 	exit 0
 fi
 
 if [ -z "$1" ]; then
-     echo -e "\nError! Please enter all arguments (run flag: -h)\n"
+     echo -e "\nError! Please enter all arguments (For example: bash $0 ~/Qt/5.15.2/gcc_64/bin/qmake)\n"
      exit 1
 fi
 
@@ -24,18 +27,29 @@ pathToQmake=$1
 path_builds_submodules=$relpath/builds_submodules
 mkdir -p $path_builds_submodules
 
-git submodule update --init --recursive
-
-# build tgbot-cpp
-pathBuildTgbot=$path_builds_submodules/tgbot
-mkdir $pathBuildTgbot
-cd $pathBuildTgbot
-cmake $relpath/tgbot-cpp
-make
+echo -e "\nRun:\n$(sed -n $((${LINENO}+1))\p $path_of_dir/$prog) \n"
+git submodule update --init --recursive \
+|| { exitCode=$?; echo -e "\033[48;2;223;30;7m\n\n\n Failed... (exitCode: $exitCode; FILE=$0) \n\n\033[0m"; exit $exitCode; }
 
 # build LogSaver
 pathBuildLogSaver=$path_builds_submodules/LogSaver
-mkdir $pathBuildLogSaver
+mkdir -p $pathBuildLogSaver
 cd $pathBuildLogSaver
-$pathToQmake $relpath/LogSaver
-make
+echo -e "\nRun:\n$(sed -n $((${LINENO}+1))\p $path_of_dir/$prog) \n"
+$pathToQmake $relpath/LogSaver \
+|| { exitCode=$?; echo -e "\033[48;2;223;30;7m\n\n\n Failed... (exitCode: $exitCode; FILE=$0) \n\n\033[0m"; exit $exitCode; }
+echo -e "\nRun:\n$(sed -n $((${LINENO}+1))\p $path_of_dir/$prog) \n"
+make \
+|| { exitCode=$?; echo -e "\033[48;2;223;30;7m\n\n\n Failed... (exitCode: $exitCode; FILE=$0) \n\n\033[0m"; exit $exitCode; }
+
+
+# build tgbot-cpp
+pathBuildTgbot=$path_builds_submodules/tgbot
+mkdir -p $pathBuildTgbot
+cd $pathBuildTgbot
+echo -e "\nRun:\n$(sed -n $((${LINENO}+1))\p $path_of_dir/$prog) \n"
+cmake $relpath/tgbot-cpp \
+|| { exitCode=$?; echo -e "\033[48;2;223;30;7m\n\n\n Failed... (exitCode: $exitCode; FILE=$0) \n\n\033[0m"; exit $exitCode; }
+echo -e "\nRun:\n$(sed -n $((${LINENO}+1))\p $path_of_dir/$prog) \n"
+make \
+|| { exitCode=$?; echo -e "\033[48;2;223;30;7m\n\n\n Failed... (exitCode: $exitCode; FILE=$0) \n\n\033[0m"; exit $exitCode; }
