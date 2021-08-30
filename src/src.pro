@@ -27,6 +27,19 @@ SOURCES += \
     GlobalData/GlobalData.cpp \
     ManagerBot.cpp \
     main.cpp \
+    state_machine/abstractstate.cpp \
+    state_machine/addingnotestate.cpp \
+    state_machine/creatinggroupstate.cpp \
+    state_machine/mainmenustate.cpp \
+    state_machine/removingnotestate.cpp \
+    state_machine/settings_states/abstractsettingsstate.cpp \
+    state_machine/settings_states/editingnotestate.cpp \
+    state_machine/settings_states/editingpositiongroupstate.cpp \
+    state_machine/settings_states/helpstate.cpp \
+    state_machine/settings_states/historystate.cpp \
+    state_machine/settings_states/languagestate.cpp \
+    state_machine/settings_states/notificationstate.cpp \
+    state_machine/settings_states/savingnotesstate.cpp
 
 HEADERS += \
     ../Exceptions/exceptions/applicationnotify.h \
@@ -47,6 +60,19 @@ HEADERS += \
     Database/managerdb.h \
     GlobalData/GlobalData.h \
     ManagerBot.h \
+    state_machine/abstractstate.h \
+    state_machine/addingnotestate.h \
+    state_machine/creatinggroupstate.h \
+    state_machine/mainmenustate.h \
+    state_machine/removingnotestate.h \
+    state_machine/settings_states/abstractsettingsstate.h \
+    state_machine/settings_states/editingnotestate.h \
+    state_machine/settings_states/editingpositiongroupstate.h \
+    state_machine/settings_states/helpstate.h \
+    state_machine/settings_states/historystate.h \
+    state_machine/settings_states/languagestate.h \
+    state_machine/settings_states/notificationstate.h \
+    state_machine/settings_states/savingnotesstate.h \
     tgbot/include/tgbot/tgbot.h
 
 FORMS += \
